@@ -1,8 +1,8 @@
 <template>
-    <div v-if="isFile" class="catalog-node-div"   @click="getBlog">{{this.catalogName}}</div>
+    <div v-if="isFile" class="catalog-node-div"   
+    @click="getBlog">{{this.catalogName}}</div>
     <div v-else 
     class="catalog-node-div"
-    :style="style"
     @click.stop="clickCatalog">{{this.catalogName}}
     <catalog-tree v-for="item in catalogArray" :key="item"
      :catalog-obj="catalogObj[item]" 
