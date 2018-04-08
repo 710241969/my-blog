@@ -11,16 +11,13 @@
 
 <script>
 import CatalogNav from './components/CatalogNav'
+import MarkdownToHtml from './assets/js/show-down'
 
 export default {
   data() {
-    return {
-    }
+    return {}
   },
   computed: {
-    getMarkDownText() {
-      return MARKDOWN_CONVERTER.makeHtml()
-    }
   },
   methods: {},
   watch: {
@@ -28,13 +25,10 @@ export default {
       console.log('route change', val, oldVal)
     }
   },
-  beforeUpdate() {
-  },
+  beforeUpdate() {},
   updated() {
     let markdownElement = this.$refs.markdown.$el
-    markdownElement.innerHTML = MARKDOWN_CONVERTER.makeHtml(
-      markdownElement.innerHTML
-    )
+    markdownElement.innerHTML = MarkdownToHtml(markdownElement.innerHTML)
   },
   components: {
     CatalogNav
@@ -44,7 +38,7 @@ export default {
 
 
 <style lang="scss">
- @import './assets/css/markdown-body.css'; /*引入公共样式*/
+@import './assets/css/markdown-body.css'; /*引入公共样式*/
 
 main {
   margin-left: 300px;

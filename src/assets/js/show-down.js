@@ -1,2 +1,3 @@
 import ShowDown from 'showdown'
-global.MARKDOWN_CONVERTER = new ShowDown.Converter()
+const Converter = new ShowDown.Converter()
+export default html => Converter.makeHtml(html)
