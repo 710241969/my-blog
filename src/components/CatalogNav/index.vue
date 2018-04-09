@@ -1,10 +1,9 @@
 <template>
   <nav id="catalog-nav">
-    <catalog-tree v-for="item in catalogArray" :key="item" 
-    :catalog-obj="catalogObj[item]" :catalog-name="item" 
-    :catalog-url="path+item" 
-    :catalog-level="level">
-    </catalog-tree>
+    <div class="catalog-div">
+      <catalog-tree v-for="item in catalogArray" :key="item" :catalog-obj="catalogObj[item]" :catalog-name="item" :catalog-url="path+item" :catalog-level="level" :catalog-visible="catalogVisible" :padding-left="paddingLeft" :children="children">
+      </catalog-tree>
+    </div>
   </nav>
 </template>
 
@@ -18,7 +17,12 @@ export default {
       catalogObj: null,
       catalogArray: null,
       path: '/',
-      level: 0
+      level: 0,
+      catalogVisible: true,
+      paddingLeft: 10,
+      children: {
+        num: 0
+      }
     }
   },
   created() {
@@ -34,6 +38,7 @@ export default {
 
 <style lang="scss" scoped>
 nav {
+  position: fixed;
   background: #222629;
   width: 300px;
   height: 100%;
@@ -59,6 +64,11 @@ nav {
     text-align: center;
     top: 0;
   }
+}
+
+.catalog-div {
+  position: relative;
+  height: 500px;
 }
 </style>
 

@@ -1,16 +1,10 @@
 <template>
-    <div v-if="isFile" class="catalog-node-div"   
-    @click="getBlog">{{this.catalogName}}</div>
-    <div v-else 
-    class="catalog-node-div"
-    @click.stop="clickCatalog">{{this.catalogName}}
-    <catalog-tree v-for="item in catalogArray" :key="item"
-     :catalog-obj="catalogObj[item]" 
-     :catalog-name="item" 
-     :catalog-url="catalogUrl+'\/'+item" 
-     :catalog-level="catalogLevel+1">
+  <div v-show="catalogVisible" v-if="isFile" class="catalog-node-div" :style="{paddingLeft:paddingLeft+'px'}" @click.stop=" getBlog ">{{this.catalogName}}</div>
+
+  <div v-show="catalogVisible " v-else class="catalog-node-div " :style="style" @click.stop="clickCatalog ">{{this.catalogName}}
+    <catalog-tree v-for="item in catalogArray " :key="item " :catalog-obj="catalogObj[item] " :catalog-name="item " :catalog-url="catalogUrl+ '\/'+item " :catalog-level="catalogLevel+1 " :catalog-visible="childrenVisible " :padding-left="paddingLeft" :children="childrenNum">
     </catalog-tree>
-    </div>
+  </div>
 </template>
 
 <script>
@@ -21,7 +15,14 @@ export default {
     return {
       catalogArray: null,
       divClass: 'catalog-node-div',
-      displayClass: 'none-display'
+      displayClass: 'none-display',
+      childrenVisible: false,
+      // style: {
+      //   height: '18px'
+      // },
+      childrenNum: {
+        num: 0
+      }
     }
   },
   props: {
@@ -40,7 +41,17 @@ export default {
     catalogUrl: {
       tupe: String
     },
-    catalogLevel: {}
+    catalogLevel: {},
+    catalogVisible: {
+      type: Boolean,
+      default: false
+    },
+    paddingLeft: {
+      type: Number
+    },
+    children: {
+      type: Object
+    }
   },
   computed: {
     isFile() {
@@ -48,9 +59,8 @@ export default {
     },
     style() {
       return {
-        height:
-          this.catalogLevel == 0 ? this.catalogArray.length * 20 + 'px' : '0px',
-        overflow: 'hidden'
+        height: (this.childrenNum.num + 1) * 18 + 'px',
+        paddingLeft: this.paddingLeft + 'px'
       }
     }
   },
@@ -58,12 +68,18 @@ export default {
     this.catalogArray = Object.keys(this.catalogObj)
   },
   methods: {
-    getBlog() {
-      // 对象
+    getBlog(e) {
       this.$router.push({ path: this.catalogUrl })
     },
     clickCatalog(e) {
-      console.log(e.target)
+      this.childrenVisible = !this.childrenVisible
+      if (this.childrenVisible) {
+        this.childrenNum.num = this.catalogArray.length
+        this.children.num = this.children.num + this.childrenNum.num
+      } else {
+        this.childrenNum.num = 0
+        this.children.num = this.children.num - this.catalogArray.length
+      }
     }
   },
   components: {
@@ -75,11 +91,13 @@ export default {
 
 <style lang="scss" scoped>
 .catalog-node-div {
+  overflow: hidden;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   -moz-user-select: none;
+  transition: all 0.3s;
 }
 
 .catalog-node-div:hover {

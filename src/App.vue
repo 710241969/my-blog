@@ -1,37 +1,32 @@
 <template>
   <div id="app">
     <catalog-nav></catalog-nav>
-    <main>
-     <transition name="slide-fade">
-    <router-view class="markdown-body" ref="markdown"></router-view>
-     </transition>
-     </main>
+    <blog-main></blog-main>
   </div>
 </template>
 
 <script>
 import CatalogNav from './components/CatalogNav'
-import MarkdownToHtml from './assets/js/show-down'
+import BlogMain from './components/BlogMain'
 
 export default {
   data() {
     return {}
   },
-  computed: {
-  },
+  computed: {},
   methods: {},
   watch: {
     $route: function(val, oldVal) {
       console.log('route change', val, oldVal)
     }
   },
-  beforeUpdate() {},
-  updated() {
-    let markdownElement = this.$refs.markdown.$el
-    markdownElement.innerHTML = MarkdownToHtml(markdownElement.innerHTML)
+  mounted() {
   },
+  beforeUpdate() {},
+  updated() {},
   components: {
-    CatalogNav
+    CatalogNav,
+    BlogMain
   }
 }
 </script>
@@ -42,20 +37,6 @@ export default {
 
 main {
   margin-left: 300px;
-}
-
-/* 可以设置不同的进入和离开动画 */
-/* 设置持续时间和动画函数 */
-.slide-fade-enter-active {
-  transition: all 0.6s ease 0.2s;
-}
-.slide-fade-leave-active {
-  transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.slide-fade-enter,
-.slide-fade-leave-to {
-  transform: translateX(10px);
-  opacity: 0;
 }
 
 #app {
