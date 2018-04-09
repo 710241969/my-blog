@@ -102,7 +102,7 @@ vue-cli v3.0初始化
 通过showdown实现Markdown转html，并添加markdown样式
 
 # v0.06（待）
-优化App.vue右侧视图页面，放入一个承载该页面的组件中
+优化App.vue的视图页面，各自放入承载该页面的组件中
 
 # v0.07（待）
 解决 npm run build 后打开网页静态资源 net::ERR_FILE_NOT_FOUND 的问题
