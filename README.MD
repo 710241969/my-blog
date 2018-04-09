@@ -103,3 +103,15 @@ vue-cli v3.0初始化
 
 # v0.06（待）
 优化App.vue右侧视图页面，放入一个承载该页面的组件中
+
+# v0.07（待）
+解决 npm run build 后打开网页静态资源 net::ERR_FILE_NOT_FOUND 的问题
+在vue.config.js中加入，在production环境中，修改output.publicPath
+``` js
+  configureWebpack: config => {
+    console.log(config)
+    if (process.env.NODE_ENV === 'production') {
+      config.output.publicPath='./'
+    } 
+  }
+```
