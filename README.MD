@@ -38,5 +38,8 @@ vue-cli v3.0初始化
   requireSpaceBeforeHeadingText: true,
   emoji: true,
 
-# v0.09（待）
-简化vue-router路由配置生成；重构左侧导航目录代码，并调整位手风琴样式
+# v0.09
+简化vue-router路由配置生成；重构左侧导航目录代码
+
+# v0.10（待）
+调整位手风琴样式

@@ -1,5 +1,5 @@
 // require.context获取博客文件上下文
-const blogRequireContext = require.context('../../blogs/', true, /\.vue$/)
-const blogRequireContextArray = blogRequireContext.keys()
+const BlogRequireContext = require.context('../../blogs/', true, /\.vue$/)
+const BlogRequireContextArray = BlogRequireContext.keys()
 
-export { blogRequireContext, blogRequireContextArray }
+export { BlogRequireContext, BlogRequireContextArray }

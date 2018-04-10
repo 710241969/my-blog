@@ -1,0 +1,1 @@
+global.ROUTE_MATCH_REGEX = /\.(.*).vue$/i

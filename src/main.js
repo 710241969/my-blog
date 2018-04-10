@@ -2,7 +2,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './routers';
 import store from './store';
-import ShowDown from './assets/js/show-down'
+import './assets/js/global'
 
 Vue.config.productionTip = false;
 

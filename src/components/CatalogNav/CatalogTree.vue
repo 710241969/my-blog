@@ -1,84 +1,94 @@
 <template>
-  <div v-show="catalogVisible" v-if="isFile" class="catalog-node-div" :style="{paddingLeft:paddingLeft+'px'}" @click.stop=" getBlog ">{{this.catalogName}}</div>
+  <div>
+    {{catalogLevel}}
+    <div v-for="item in catalogArray" :key="item.name" class="catalog-node-div">
+      <div v-if="item.children" @click.stop="clickCatalog(item)">{{item.name}}
+        <catalog-tree v-show="item.open" :catalog-array="item.children" :catalog-url="getUrl(item)" :father-level="catalogLevel">
+        </catalog-tree>
+      </div>
 
-  <div v-show="catalogVisible " v-else class="catalog-node-div " :style="style" @click.stop="clickCatalog ">{{this.catalogName}}{{childrenNum}}
-    <catalog-tree v-for="item in catalogArray " :key="item " :catalog-obj="catalogObj[item] " :catalog-name="item " :catalog-url="catalogUrl+ '\/'+item " :catalog-level="catalogLevel+1 " :catalog-visible="childrenVisible " :padding-left="paddingLeft" :children="childrenNum">
-    </catalog-tree>
+      <div v-else @click.stop="getBlog(item)">{{item.name}}</div>
+
+    </div>
   </div>
 </template>
 
 <script>
 import CatalogTree from './CatalogTree.vue'
+
 export default {
   name: 'catalog-tree',
   data() {
     return {
-      catalogArray: null,
-      divClass: 'catalog-node-div',
-      displayClass: 'none-display',
-      childrenVisible: false,
-      // style: {
-      //   height: '18px'
-      // },
-      childrenNum: {
-        num: 0
+      catalogLevel: {
+        num: 1
       }
     }
   },
   props: {
-    catalogObj: {
+    catalogArray: {
       // type: Object,
       // default: 0,
       // required: true,
       // validator: () => {}
     },
-    catalogName: {
-      // type: String
-      // default: 0,
+    catalogUrl: {
+      type: String,
+      default: ''
       // required: true,
       // validator: () => {}
     },
-    catalogUrl: {
-      tupe: String
-    },
-    catalogLevel: {},
-    catalogVisible: {
-      type: Boolean,
-      default: false
-    },
-    paddingLeft: {
-      type: Number
-    },
-    children: {
+    fatherLevel: {
       type: Object
+      // default: () => {
+      //   return {
+      //     num: 1
+      //   }
+      // }
     }
   },
   computed: {
-    isFile() {
-      return !(this.catalogObj instanceof Object)
-    },
     style() {
-      return {
-        height: (this.childrenNum.num + 1) * 18 + 'px',
-        paddingLeft: this.paddingLeft + 'px'
-      }
+      return { height: `${(this.catalogLevel.num + 1) * 18}px` }
     }
   },
   created() {
-    this.catalogArray = Object.keys(this.catalogObj)
+    // this.catalogLevel.num = this.catalogArray.length
+  },
+  mounted() {
+    // console.log(this.$refs)
   },
   methods: {
-    getBlog(e) {
-      this.$router.push({ path: this.catalogUrl })
+    getCatalogLevel() {
+      return this.catalogLevel.num
     },
-    clickCatalog(e) {
-      this.childrenVisible = !this.childrenVisible
-      if (this.childrenVisible) {
-        this.childrenNum.num = this.catalogArray.length
-        this.children.num = this.children.num + this.childrenNum.num
-      } else {
-        this.childrenNum.num = 0
-        this.children.num = this.children.num - this.catalogArray.length
+    setCatalogLevel(num) {
+      this.catalogLevel.num = num
+    },
+    getUrl(item) {
+      return this.catalogUrl + '/' + item.name
+    },
+    getBlog(item) {
+      this.$router.push({ path: this.getUrl(item) })
+    },
+    clickCatalog(item) {
+      let oldOpen = item.open
+      this.catalogArray.forEach(element => {
+        element.open = false
+      })
+      item.open = !oldOpen
+
+      let level = 1
+      let childrenArray = item.children
+      if (!oldOpen) {
+        /*         childrenArray.forEach(element => {
+          console.log(element.level)
+          level += element.level
+          console.log(level)
+        }) */
+        this.catalogArray.forEach(elememt => {
+          level += elememt.level
+        })
       }
     }
   },
@@ -87,7 +97,6 @@ export default {
   }
 }
 </script>
-
 
 <style lang="scss" scoped>
 .catalog-node-div {

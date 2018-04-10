@@ -1,30 +1,36 @@
 <template>
   <nav id="catalog-nav">
     <div class="catalog-div">
-      <catalog-tree :catalog-array="catalogArray" :father-level="catalogLevel"></catalog-tree>
+      {{children}}
+      <catalog-tree v-for="item in catalogArray" :key="item" :catalog-obj="catalogObj[item]" :catalog-name="item" :catalog-url="path+item" :catalog-level="level" :catalog-visible="catalogVisible" :padding-left="paddingLeft" :children="children">
+      </catalog-tree>
     </div>
   </nav>
 </template>
 
 <script>
 import CatalogTree from './CatalogTree.vue'
-import CatalogArray from '../../assets/js/init-catalog-array'
+import CatalogObj from '../../assets/js/init-catalog'
 
 export default {
   data() {
     return {
-      catalogArray: null
-    }
-  },
-  computed: {
-    catalogLevel() {
-      return {
-        num: this.catalogArray.length
+      catalogObj: null,
+      catalogArray: null,
+      path: '/',
+      level: 0,
+      catalogVisible: true,
+      paddingLeft: 10,
+      children: {
+        num: 0
       }
     }
   },
+  computed: {},
   created() {
-    this.catalogArray = CatalogArray
+    this.catalogObj = CatalogObj
+    this.catalogArray = Object.keys(CatalogObj)
+    this.children.num = this.catalogArray.length
   },
   methods: {},
   components: {
