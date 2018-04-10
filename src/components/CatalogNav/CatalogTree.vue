@@ -1,16 +1,9 @@
 <template>
-  <div>
-    {{catalogLevel}}
-    <div v-for="item in catalogArray" :key="item.name" class="catalog-node-div">
-      <div v-if="item.children" @click.stop="clickCatalog(item)">{{item.name}}
-        <catalog-tree v-show="item.open" :catalog-array="item.children" :catalog-url="getUrl(item)" :father-level="catalogLevel">
-        </catalog-tree>
-      </div>
-
-      <div v-else @click.stop="getBlog(item)">{{item.name}}</div>
-
-    </div>
+  <div v-if="catalogObj.children" class="catalog-node-div" :style="style" @click.stop="clickCatalog">{{catalogObj.name}}
+    <catalog-tree v-show="catalogObj.open" v-for="item in catalogObj.children" :key="item.name" :catalog-obj="item" :catalog-array="catalogObj.children" :catalog-url="getUrl(catalogObj)" :father-level="catalogLevel" ref="item">
+    </catalog-tree>
   </div>
+  <div v-else class="catalog-node-div" @click.stop="getBlog()">{{catalogObj.name}}</div>
 </template>
 
 <script>
@@ -22,10 +15,14 @@ export default {
     return {
       catalogLevel: {
         num: 1
-      }
+      },
+      height: 18
     }
   },
   props: {
+    catalogObj: {
+      type: Object
+    },
     catalogArray: {
       // type: Object,
       // default: 0,
@@ -39,25 +36,21 @@ export default {
       // validator: () => {}
     },
     fatherLevel: {
-      type: Object
-      // default: () => {
-      //   return {
-      //     num: 1
-      //   }
-      // }
+      type: Object,
+      default: () => {
+        return {
+          num: 1
+        }
+      }
     }
   },
   computed: {
     style() {
-      return { height: `${(this.catalogLevel.num + 1) * 18}px` }
+      return { height: `${this.getCatalogLevel() * this.height}px` }
     }
   },
-  created() {
-    // this.catalogLevel.num = this.catalogArray.length
-  },
-  mounted() {
-    // console.log(this.$refs)
-  },
+  created() {},
+  mounted() {},
   methods: {
     getCatalogLevel() {
       return this.catalogLevel.num
@@ -68,27 +61,33 @@ export default {
     getUrl(item) {
       return this.catalogUrl + '/' + item.name
     },
-    getBlog(item) {
-      this.$router.push({ path: this.getUrl(item) })
+    getBlog() {
+      this.$router.push({ path: this.getUrl(this.catalogObj) })
     },
-    clickCatalog(item) {
-      let oldOpen = item.open
+    clickCatalog() {
+      let oldOpen = this.catalogObj.open
       this.catalogArray.forEach(element => {
         element.open = false
       })
-      item.open = !oldOpen
+      this.catalogObj.open = !oldOpen
 
       let level = 1
-      let childrenArray = item.children
+      let childrenArray = this.$refs.item
       if (!oldOpen) {
-        /*         childrenArray.forEach(element => {
-          console.log(element.level)
-          level += element.level
-          console.log(level)
-        }) */
-        this.catalogArray.forEach(elememt => {
-          level += elememt.level
+        childrenArray.forEach(elememt => {
+          level += elememt.getCatalogLevel()
         })
+      }
+      this.setCatalogLevel(level)
+    }
+  },
+  watch: {
+    'catalogLevel.num': function(val, oldVal) {
+      this.fatherLevel.num += val - oldVal
+    },
+    'catalogObj.open': function(val, oldVal) {
+      if (false == val) {
+        this.setCatalogLevel(1)
       }
     }
   },
@@ -107,6 +106,9 @@ export default {
   -ms-user-select: none;
   -moz-user-select: none;
   transition: all 0.3s;
+  // padding-top: 10px;
+  // padding-bottom: 10px;
+  margin-left: 10px;
 }
 
 .catalog-node-div:hover {

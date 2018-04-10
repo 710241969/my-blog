@@ -1,9 +1,7 @@
 <template>
   <nav id="catalog-nav">
     <div class="catalog-div">
-      <span>目录</span>
-      <catalog-tree v-for="item in catalogArray" :key="item.name" :catalog-obj="item" :catalog-array="catalogArray">
-      </catalog-tree>
+      <catalog-tree :catalog-array="catalogArray" :father-level="catalogLevel"></catalog-tree>
     </div>
   </nav>
 </template>
