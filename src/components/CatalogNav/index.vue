@@ -1,6 +1,7 @@
 <template>
   <nav id="catalog-nav">
     <div class="catalog-div">
+      {{children}}
       <catalog-tree v-for="item in catalogArray" :key="item" :catalog-obj="catalogObj[item]" :catalog-name="item" :catalog-url="path+item" :catalog-level="level" :catalog-visible="catalogVisible" :padding-left="paddingLeft" :children="children">
       </catalog-tree>
     </div>
@@ -25,9 +26,11 @@ export default {
       }
     }
   },
+  computed: {},
   created() {
     this.catalogObj = CatalogObj
     this.catalogArray = Object.keys(CatalogObj)
+    this.children.num = this.catalogArray.length
   },
   methods: {},
   components: {
