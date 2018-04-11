@@ -3,11 +3,7 @@
     <div v-for="item in catalogArray" :key="item.name">
 
       <div class="catalog-node-div" :style="nodeStyle" @click.stop="item.children?clickCatalog(item):getBlog(item)">
-        <!-- {{item.name}} -->
-        <!-- <span> -->
         <span :class="[item.children?'right-chevron-i':'fa fa-book fa-fw']" :style="[{'transform':(item.open? 'rotate(90deg)':'')}]"></span>{{item.name}}
-        <!-- </span> -->
-        <!-- <span class="right-chevron-i"></span> -->
       </div>
 
       <div v-if="item.children">
