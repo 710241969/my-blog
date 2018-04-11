@@ -1,8 +1,9 @@
 <template>
   <nav id="catalog-nav">
-    <div class="catalog-nav-div">
+    <div class="catalog-div">
       <span>目录</span>
-      <catalog-tree :catalog-array="catalogArray" :catalog-obj="catalogRoot"></catalog-tree>
+      <catalog-tree v-for="item in catalogArray" :key="item.name" :catalog-obj="item" :catalog-array="catalogArray" :catalog-visible="true">
+      </catalog-tree>
     </div>
   </nav>
 </template>
@@ -14,7 +15,6 @@ import CatalogArray from "../../assets/js/init-catalog-array";
 export default {
   data() {
     return {
-      catalogRoot: null,
       catalogArray: null
     };
   },
@@ -27,12 +27,6 @@ export default {
   },
   created() {
     this.catalogArray = CatalogArray;
-    this.catalogRoot = {
-      heightNum: 0,
-      open: true,
-      children: CatalogArray,
-      level: 0
-    };
   },
   methods: {},
   components: {
@@ -71,8 +65,7 @@ nav {
   }
 }
 
-.catalog-nav-div {
-  overflow: auto;
+.catalog-div {
   position: relative;
   height: 500px;
 }

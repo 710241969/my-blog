@@ -2,7 +2,7 @@
   <div v-show="catalogVisible" v-if="isFile" class="catalog-node-div" :style="{paddingLeft:paddingLeft+'px'}" @click.stop=" getBlog ">{{this.catalogName}}</div>
 
   <div v-show="catalogVisible " v-else class="catalog-node-div " :style="style" @click.stop="clickCatalog ">{{this.catalogName}}{{childrenNum}}
-    <catalog-tree v-for="item in catalogArray " :key="item " :catalog-obj="catalogObj[item] " :catalog-name="item " :catalog-url="catalogUrl+ '\/'+item " :catalog-level="catalogLevel+1 " :catalog-visible="childrenVisible " :padding-left="paddingLeft" :children="childrenNum">
+    <catalog-tree v-for="item in catalogArray " :key="item " :catalog-obj="catalogObj[item] " :catalog-name="item " :catalog-url="catalogUrl+ '\/'+item " :catalog-heightNum="catalogLevel+1 " :catalog-visible="childrenVisible " :padding-left="paddingLeft" :children="childrenNum">
     </catalog-tree>
   </div>
 </template>

@@ -2,7 +2,7 @@
   <nav id="catalog-nav">
     <div class="catalog-div">
       {{children}}
-      <catalog-tree v-for="item in catalogArray" :key="item" :catalog-obj="catalogObj[item]" :catalog-name="item" :catalog-url="path+item" :catalog-level="level" :catalog-visible="catalogVisible" :padding-left="paddingLeft" :children="children">
+      <catalog-tree v-for="item in catalogArray" :key="item" :catalog-obj="catalogObj[item]" :catalog-name="item" :catalog-url="path+item" :catalog-heightNum="heightNum" :catalog-visible="catalogVisible" :padding-left="paddingLeft" :children="children">
       </catalog-tree>
     </div>
   </nav>
@@ -18,7 +18,7 @@ export default {
       catalogObj: null,
       catalogArray: null,
       path: '/',
-      level: 0,
+      heightNum: 0,
       catalogVisible: true,
       paddingLeft: 10,
       children: {

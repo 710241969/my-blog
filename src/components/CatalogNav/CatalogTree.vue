@@ -1,28 +1,27 @@
 <template>
-  <div v-if="catalogObj.children" class="catalog-node-div" :style="style" @click.stop="clickCatalog">{{catalogObj.name}}
-    <catalog-tree v-show="catalogObj.open" v-for="item in catalogObj.children" :key="item.name" :catalog-obj="item" :catalog-array="catalogObj.children" :catalog-url="getUrl(catalogObj)" :father-level="catalogLevel" ref="item">
-    </catalog-tree>
+  <div class="catalog-div" :style="style">
+    <div v-for="item in catalogArray" :key="item.name">
+
+      <div class="catalog-node-div" :style="nodeStyle" @click.stop="item.children?clickCatalog(item):getBlog(item)">{{item.name}}</div>
+
+      <div v-if="item.children">
+        <catalog-tree :catalog-array="item.children" :catalog-url="getUrl(item)" :catalog-obj="item">
+        </catalog-tree>
+      </div>
+
+    </div>
   </div>
-  <div v-else class="catalog-node-div" @click.stop="getBlog()">{{catalogObj.name}}</div>
 </template>
 
 <script>
-import CatalogTree from './CatalogTree.vue'
+import CatalogTree from "./CatalogTree.vue";
 
 export default {
-  name: 'catalog-tree',
+  name: "catalog-tree",
   data() {
-    return {
-      catalogLevel: {
-        num: 1
-      },
-      height: 18
-    }
+    return {};
   },
   props: {
-    catalogObj: {
-      type: Object
-    },
     catalogArray: {
       // type: Object,
       // default: 0,
@@ -31,84 +30,71 @@ export default {
     },
     catalogUrl: {
       type: String,
-      default: ''
+      default: ""
       // required: true,
       // validator: () => {}
     },
-    fatherLevel: {
-      type: Object,
-      default: () => {
-        return {
-          num: 1
-        }
-      }
-    }
+    catalogObj: {}
   },
   computed: {
     style() {
-      return { height: `${this.getCatalogLevel() * this.height}px` }
+      return { height: `${this.heightNum * 28}px` };
+    },
+    nodeStyle() {
+      return { paddingLeft: `${(this.catalogObj.level + 1) * 10}px` };
+    },
+    heightNum() {
+      let heightNum = 0;
+      if (this.catalogObj.open) {
+        heightNum = this.catalogArray.length;
+        let children = this.catalogObj.children;
+        if (children) {
+          children.forEach(item => {
+            heightNum += item.heightNum;
+          });
+        }
+      }
+      this.catalogObj.heightNum = heightNum;
+      return heightNum;
     }
   },
   created() {},
   mounted() {},
   methods: {
-    getCatalogLevel() {
-      return this.catalogLevel.num
-    },
-    setCatalogLevel(num) {
-      this.catalogLevel.num = num
-    },
     getUrl(item) {
-      return this.catalogUrl + '/' + item.name
+      return this.catalogUrl + "/" + item.name;
     },
-    getBlog() {
-      this.$router.push({ path: this.getUrl(this.catalogObj) })
+    getBlog(item) {
+      this.$router.push({ path: this.getUrl(item) });
     },
-    clickCatalog() {
-      let oldOpen = this.catalogObj.open
+    clickCatalog(item) {
+      let oldOpen = item.open;
       this.catalogArray.forEach(element => {
-        element.open = false
-      })
-      this.catalogObj.open = !oldOpen
-
-      let level = 1
-      let childrenArray = this.$refs.item
-      if (!oldOpen) {
-        childrenArray.forEach(elememt => {
-          level += elememt.getCatalogLevel()
-        })
-      }
-      this.setCatalogLevel(level)
-    }
-  },
-  watch: {
-    'catalogLevel.num': function(val, oldVal) {
-      this.fatherLevel.num += val - oldVal
-    },
-    'catalogObj.open': function(val, oldVal) {
-      if (false == val) {
-        this.setCatalogLevel(1)
-      }
+        element.open = false;
+      });
+      item.open = !oldOpen;
     }
   },
   components: {
     CatalogTree
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-.catalog-node-div {
+.catalog-div {
   overflow: hidden;
+  transition: all 0.2s;
+}
+
+.catalog-node-div {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   -moz-user-select: none;
   transition: all 0.3s;
-  // padding-top: 10px;
-  // padding-bottom: 10px;
-  margin-left: 10px;
+  padding: 5px 0 5px 0;
 }
 
 .catalog-node-div:hover {
