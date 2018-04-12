@@ -43,38 +43,28 @@
       <div style="    font-size: 25px;
     height: 30px;
     padding: 10px 0 0 5px;    border-bottom: 1px solid #c6cbd1;">博客目录</div>
-      <catalog-tree :catalog-obj="catalogRoot"></catalog-tree>
+      <catalog-tree :catalog-obj="catalogObj"></catalog-tree>
     </div>
   </nav>
 </template>
 
 <script>
 import CatalogTree from './CatalogTree.vue'
-import CatalogArray from '../../assets/js/init-catalog-array'
 
 export default {
   data() {
-    return {
-      catalogRoot: null,
-      catalogArray: null
+    return {}
+  },
+  props: {
+    catalogObj: {
+      type: Object,
+      default: ''
+      // required: true,
+      // validator: () => {}
     }
   },
-  computed: {
-    catalogLevel() {
-      return {
-        num: this.catalogArray.length
-      }
-    }
-  },
-  created() {
-    this.catalogArray = CatalogArray
-    this.catalogRoot = {
-      heightNum: 0,
-      open: true,
-      children: CatalogArray,
-      level: 0
-    }
-  },
+  computed: {},
+  created() {},
   methods: {},
   components: {
     CatalogTree

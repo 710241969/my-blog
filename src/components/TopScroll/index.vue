@@ -31,7 +31,6 @@ export default {
         window.pageYOffset ||
         document.documentElement.scrollTop ||
         document.body.scrollTop
-      console.log(this.scrollTop)
     },
     toTop() {
       let top = this.scrollTop
@@ -39,7 +38,6 @@ export default {
     },
     toTopTimeOut(top, speed) {
       setTimeout(() => {
-        console.log('???')
         if (top - speed < 0) {
           window.pageYOffset = 0
           document.documentElement.scrollTop = 0

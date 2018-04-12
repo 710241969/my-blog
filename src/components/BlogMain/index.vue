@@ -8,17 +8,20 @@
 </template>
 
 <script>
-import MarkdownToHtml from '../../assets/js/show-down'
+// import MarkdownToHtml from '../../assets/js/show-down'
 import TopScroll from '../TopScroll'
+import MarkdownToHtml from '../../assets/js/markdown-html'
 
 export default {
   mounted() {},
   updated() {
-    console.log('更新视图完成updated')
     let markdownElement = this.$refs.markdown.$el
-    markdownElement.innerHTML = MarkdownToHtml(markdownElement.innerHTML)
+    markdownElement.innerHTML = MarkdownToHtml(
+      markdownElement.innerHTML.replace(/&gt;/g, '>')
+    )
   },
   methods: {},
+  watch: {},
   components: {
     TopScroll
   }

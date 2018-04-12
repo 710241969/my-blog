@@ -5,7 +5,9 @@ module.exports = {
     // console.log(config)
     if (process.env.NODE_ENV === 'production') {
       config.output.publicPath = './'
+      config.module.rules[4].use[0].options.publicPath = '../'
     }
+    // font-awesome
   }
 };
 

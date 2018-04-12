@@ -1,5 +1,5 @@
 import ShowDown from 'showdown'
-
+// ShowDown.setFlavor('github');
 const Converter = new ShowDown.Converter({
   omitExtraWLInCodeBlocks: true,
   strikethrough: true,
@@ -7,6 +7,7 @@ const Converter = new ShowDown.Converter({
   tasklists: true,
   requireSpaceBeforeHeadingText: true,
   emoji: true,
+  // splitAdjacentBlockquotes: true
 })
 
 export default html => Converter.makeHtml(html)
