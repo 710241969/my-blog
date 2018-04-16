@@ -62,7 +62,11 @@ export default {
 
 
 <style lang="scss">
-@import './assets/css/markdown-body.css'; /*引入公共样式*/
+@import './assets/css/markdown-body.scss'; /*引入公共样式*/
+@import './assets/css/style.scss'; /*移动端适配样式*/
+// ！！！注意顺序
+@import './assets/css/mobile-media.scss'; /*移动端适配样式*/
+
 
 main {
   margin-left: 300px;

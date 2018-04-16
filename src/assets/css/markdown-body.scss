@@ -1,3 +1,4 @@
+.markdown-body{
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -17,6 +18,8 @@ time, mark, audio, video {
   font-size: 100%;
   vertical-align: baseline;
   border: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
@@ -26,7 +29,9 @@ footer, header, hgroup, menu, nav, section {
 body {
   line-height: 1;
 }
-ol, ul {
+ol, ul {   
+   display: table;
+  margin-left: 20px;
   list-style: none;
 }
 blockquote, q {
@@ -81,14 +86,21 @@ header h2 {
 }
 
 code, pre {
-  margin-bottom: 30px;
+  margin-top:5px; 
+  margin-bottom: 5px;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal;
   font-size: 12px;
   color: #222;
 }
 
-code {
-  padding: 0 3px;
+code {    
+  padding: 0.2em 0.4em;
+  margin: 0 5px;
+  font-size: 85%;
+  background-color: rgba(27,31,35,0.1);
+  border-radius: 3px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  // padding: 0 3px;
 }
 
 pre {
@@ -98,6 +110,13 @@ pre {
 }
 pre code {
   padding: 0;
+  margin: 0;
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+  // padding: 0;
 }
 
 ul, ol, dl {
@@ -133,44 +152,47 @@ form {
 
 h1 {
   font-size: 2.8em;
+      border-bottom: 1px solid #eaecef;
 }
 
 h2 {
   margin-bottom: 8px;
   font-size: 22px;
   font-weight: bold;
-  color: #303030;
 }
 
 h3 {
   margin-bottom: 8px;
   font-size: 18px;
   font-weight: bold;
-  color: #d5000d;
 }
 
 h4 {
   font-size: 16px;
   font-weight: bold;
-  color: #303030;
 }
 
 h5 {
   font-size: 1em;
-  color: #303030;
 }
 
 h6 {
   font-size: .8em;
-  color: #303030;
+  // color: #303030;
+}
+
+h1,h2,h3,h4,h5,h6{
+  margin-top: 24px; 
+  // color: #24292e;
+   color: #d5000d;
 }
 
 p {
-  margin-bottom: 20px;
+  // margin-bottom: 20px;
   font-weight: 300;
 }
 
-a {
+a {color: #0366d6;
   text-decoration: none;
 }
 
@@ -181,18 +203,18 @@ p a {
 blockquote {
   padding: 0 0 0 30px;
   margin-bottom: 20px;
-  font-size: 1.6em;
+  // font-size: 1.6em;
   border-left: 10px solid #e9e9e9;
 }
 
 ul li {
-  padding-left: 20px;
+  padding-left: 5px;
   list-style-position: inside;
   list-style: disc;
 }
 
 ol li {
-  padding-left: 3px;
+  padding-left: 5px;
   list-style-position: inside;
   list-style: decimal;
 }
@@ -226,3 +248,11 @@ footer a {
 .clearfix {display: inline-block;}
 * html .clearfix {height: 1%;}
 .clearfix {display: block;}
+
+img{
+  margin: 20px 0;
+  border: 2px solid #005cc5;
+  border-radius: 3px;
+}
+
+}
