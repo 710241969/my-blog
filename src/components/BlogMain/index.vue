@@ -1,6 +1,7 @@
 <template>
   <main class="blog-main">
     <div class="blog-div">
+      {{currentUrl}}
       <transition name="slide-fade">
         <router-view class="markdown-body no-border" ref="markdown"></router-view>
       </transition>
@@ -10,20 +11,38 @@
 </template>
 
 <script>
-// import MarkdownToHtml from '../../assets/js/show-down'
 import TopScroll from '../TopScroll'
-import MarkdownToHtml from '../../assets/js/markdown-html'
 
 export default {
+  computed: {
+    currentUrl() {
+      // console.log(1)
+      // let markdownElement = this.$refs.markdown.$el
+      // markdownElement.innerHTML = require('../../../blogs' +
+      //   this.$store.state.currentUrl +
+      //   '.md')
+      return this.$store.state.currentUrl
+    }
+  },
+  watch: {
+    $route: function(val, oldVal) {
+      // console.log(val)
+      // let markdownElement = this.$refs.markdown.$el
+      // markdownElement.innerHTML = require('../../../blogs' + val.path + '.md')
+    }
+  },
   mounted() {},
   updated() {
-    let markdownElement = this.$refs.markdown.$el
-    markdownElement.innerHTML = MarkdownToHtml(
-      markdownElement.innerHTML.replace(/&gt;/g, '>').replace(/&lt;/g, '<')
-    )
+    // let markdownElement = this.$refs.markdown.$el
+    // markdownElement.innerHTML = require('../../../blogs/示例博客.md')
+    // markdownElement.innerHTML = markdownElement.innerText
+    //MarkdownToHtml(
+    //   markdownElement.firstElementChild.innerHTML
+    //     .replace(/&gt;/g, '>')
+    //     .replace(/&lt;/g, '<')
+    // )
   },
   methods: {},
-  watch: {},
   components: {
     TopScroll
   }

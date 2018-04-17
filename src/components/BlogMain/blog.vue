@@ -1,9 +1,5 @@
 <template>
-  <pre>
-    <textarea>
-# 标题
-    <textarea>
-  </pre>
+  <div></div>
 </template>
 
 <script>

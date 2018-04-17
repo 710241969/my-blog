@@ -49,3 +49,9 @@ vue-cli v3.0初始化
 
 # v0.11
 完善左侧导航栏（刷新保留目录状态）；修复font-awesome引入问题；使用marked作为markdown解析器
+
+# v0.12
+修改markdown样式，添加部分移动端适配标样式
+
+# v0.12
+大幅度调整markdown的写入方式，通过markdown-loader引入MD文件

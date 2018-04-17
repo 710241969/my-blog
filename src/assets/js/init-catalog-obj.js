@@ -1,6 +1,8 @@
 import { BlogRequireContextArray } from './blog-require-context'
 
-const ROUTE_MATCH_REGEX = /^\.\/(.*).vue$/i
+// const ROUTE_MATCH_REGEX = /^\.\/(.*).vue$/i
+
+const ROUTE_MATCH_REGEX = /^\.\/(.*).md$/i
 
 let CatalogObj = {}
 let currentObj = CatalogObj

@@ -1,0 +1,86 @@
+<template>
+    <pre>
+    <textarea>
+# 数组拼接字符串
+## 前言
+之前一直想能像JS那样，有一个Array.join()的方法，将一个数组拼接为一个字符串，这在数据库的以某个字符分隔的字符型字段操作上十分常用，一开始只能自己封装一个for循环，后来JAVA8出来了，用了stream的方式，直到最近看书，看到String.join()方法，让我大吃一惊，原来还有这个方法，自己一直都不知道。。
+先说结论，String.join()是最优解
+
+## 对比
+为了对比一下这几个方法的性能，我们来写好三个拼接方法
+1. 通过`String.join()`拼接
+```JAVA
+private static void StringJoin(List<String> strList) {
+    long startTime = System.currentTimeMillis();
+    String.join(",", strList);
+    long endTime = System.currentTimeMillis();
+    System.out.println("StringJoin:" + (endTime - startTime));
+}
+```
+2. 通过`stream`拼接
+```JAVA
+private static void Stream(List<String> strList) {
+    long startTime = System.currentTimeMillis();
+    strList.stream().collect(Collectors.joining(","));
+    long endTime = System.currentTimeMillis();
+    System.out.println("Stream:" + (endTime - startTime));
+}
+```
+3. 通过循环遍历列表拼接
+```JAVA
+private static void Loop(List<String> strList) {
+    long startTime = System.currentTimeMillis();
+    int size = strList.size();
+    StringBuilder stringBuilder = new StringBuilder();
+    for (int i = 0; i < size; i++) {
+        if (i != size - 1) {
+            stringBuilder.append(strList.get(i) + ",");
+        } else {
+            stringBuilder.append(strList.get(i));
+        }
+    }
+    stringBuilder.toString();
+    long endTime = System.currentTimeMillis();
+    System.out.println("loop:" + (endTime - startTime));
+}
+```
+
+然后生成数组
+```JAVA
+List<String> strList = new ArrayList();
+for (int i = 0; i < 1000000; i++) {
+    strList.add("str");
+}
+```
+分别用100000、1000000长度的数组测试结果如下
+100000长度
+>StringJoin:16
+Stream:88
+loop:25
+
+1000000长度
+>StringJoin:71
+Stream:142
+loop:91
+
+## 结论
+String.join()方法和自己写的循环在性能上遍历没有太大差别，当然，既然有轮子了，就没必要自己造。
+stream的方式性能没有这么好。
+
+## String.join()方法
+
+## 源码解析
+还没完，我还想从从源码的角度来思考一下性能差别的原因在哪
+    </textarea>
+  </pre>
+</template>
+
+<script>
+export default {}
+</script>
+
+<style lang="scss" scoped>
+
+</style>
+
+

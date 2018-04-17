@@ -21,12 +21,13 @@ export default {
   methods: {},
   watch: {
     $route: function(val, oldVal) {
+      this.$store.dispatch('setCurrentUrl', val.fullPath)
+
       this.catalogArray.forEach(element => {
         element.open = false
       })
 
       let urlQueue = val.path.substring(1).split('/')
-      console.log(urlQueue)
       let catalogArrayItm = this.catalogArray
       while (urlQueue && urlQueue.length) {
         let urlItem = urlQueue.shift()
@@ -66,7 +67,6 @@ export default {
 @import './assets/css/style.scss'; /*移动端适配样式*/
 // ！！！注意顺序
 @import './assets/css/mobile-media.scss'; /*移动端适配样式*/
-
 
 main {
   margin-left: 300px;

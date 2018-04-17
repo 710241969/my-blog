@@ -1,6 +1,8 @@
-import { BlogRequireContext, BlogRequireContextArray } from './blog-require-context'
+import { BlogRequireContextArray } from './blog-require-context'
+import Blog from '../../components/BlogMain/blog'
 
-const ROUTE_MATCH_REGEX = /\.(.*).vue$/i
+// const ROUTE_MATCH_REGEX = /\.(.*).vue$/i
+const ROUTE_MATCH_REGEX = /\.(.*).md$/i
 
 //Vue路由列表
 let vueRouter = []
@@ -10,11 +12,11 @@ for (let i = 0, len = BlogRequireContextArray.length; i < len; i++) {
   vueRouter.push({
     path: path,
     name: path,
-    component:
-      resolve =>
-        require.ensure(
-          [],
-          () => resolve(BlogRequireContext(item)))
+    component: Blog
+    // resolve =>
+    //   require.ensure(
+    //     [],
+    //     () => resolve(BlogRequireContext(item)))
   })
 }
 

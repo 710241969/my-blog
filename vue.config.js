@@ -2,12 +2,27 @@ module.exports = {
   lintOnSave: false,
   configureWebpack: config => {
     //解决 npm run build 后打开网页静态资源 net::ERR_FILE_NOT_FOUND 的问题 在vue.config.js中加入，在production环境中，修改output.publicPath
-    // console.log(config)
+    console.log(config.module.rules)
     if (process.env.NODE_ENV === 'production') {
       config.output.publicPath = './'
       config.module.rules[4].use[0].options.publicPath = '../'
     }
     // font-awesome
+
+    config.module.rules.push({
+      test: /\.md$/,
+      use: [
+        {
+          loader: "html-loader"
+        },
+        {
+          loader: "markdown-loader",
+          options: {
+            renderer: new require("marked").Renderer()
+          }
+        }
+      ]
+    })
   }
 };
 
