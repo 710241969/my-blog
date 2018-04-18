@@ -20,4 +20,11 @@ for (let i = 0, len = BlogRequireContextArray.length; i < len; i++) {
   })
 }
 
+vueRouter.push({
+  path: '/', name: '/', redirect: '/home', component: Blog
+})
+vueRouter.push({
+  path: '/home', name: '/home', component: Blog
+})
+
 export default vueRouter

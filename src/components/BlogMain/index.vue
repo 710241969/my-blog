@@ -10,7 +10,8 @@
 </template>
 
 <script>
-import TopScroll from '../TopScroll'
+import { BlogRequireContext } from "../../assets/js/blog-require-context";
+import TopScroll from "../TopScroll";
 
 export default {
   computed: {
@@ -21,35 +22,62 @@ export default {
       //   this.$store.state.currentUrl +
       //   '.md')
       // return this.$store.state.currentUrl
-      return this.$route
-
+      return this.$route;
     }
   },
   watch: {
     $route: function(val, oldVal) {
-this.renderMarkdown()
+      // if(val==='/'){
+
+      // }
+      // console.log(val)
+      // console.log("watch");
+      this.renderMarkdown();
     }
   },
-  created(){},
+  created() {},
   mounted() {
-    this.renderMarkdown()
+    console.log("mounted");
+    console.log(this.$refs);
+    this.renderMarkdown();
   },
-  updated() {},
+  updated() {
+    console.log("update");
+  },
   methods: {
-    renderMarkdown(){
-          let markdownElement = this.$refs.markdown.$el      
-    markdownElement.innerHTML = require('../../../blogs' + this.$route.path+ '.md')
+    renderMarkdown() {
+      // console.log(BlogRequireContext("." + this.$route.path + ".md"));
+      let markdownElement = this.$refs.markdown.$el;
+      if (this.$route.path === "/home") {
+        markdownElement.innerHTML = require("./home.md");
+        return;
+      }
+      markdownElement.innerHTML =
+        // await (() =>
+        // import("../../../blogs" + this.$route.path + ".md"))();
+        //  await (resolve =>
+        //     require.ensure([], () =>
+        //       resolve(require("../../../blogs" + this.$route.path + ".md"))
+        //     ))();
+        //   );
+        // resolve =>
+        // require.ensure([], () =>
+        //   require(BlogRequireContext("." + this.$route.path + ".md"))
+        // );
+        // BlogRequireContext("." + this.$route.path + ".md");
+
+        require("../../../blogs" + this.$route.path + ".md");
     }
   },
   components: {
     TopScroll
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
 // @import '../../assets/css/markdown-body.scss'; /*引入公共样式*/
-@import '../../assets/css/fade.css'; /*引入公共样式*/
+@import "../../assets/css/fade.css"; /*引入公共样式*/
 
 .blog-div {
   padding: 20px 10px;
