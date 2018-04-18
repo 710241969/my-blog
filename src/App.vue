@@ -18,16 +18,13 @@ export default {
     }
   },
   computed: {},
-  methods: {},
-  watch: {
-    $route: function(val, oldVal) {
-      this.$store.dispatch('setCurrentUrl', val.fullPath)
-
+  methods: {
+    setOpenDialog(url) {
       this.catalogArray.forEach(element => {
         element.open = false
       })
 
-      let urlQueue = val.path.substring(1).split('/')
+      let urlQueue = url.substring(1).split('/')
       let catalogArrayItm = this.catalogArray
       while (urlQueue && urlQueue.length) {
         let urlItem = urlQueue.shift()
@@ -42,6 +39,12 @@ export default {
       }
     }
   },
+  watch: {
+    $route: function(val, oldVal) {
+      // this.$store.dispatch('setCurrentUrl', val.fullPath)
+      this.setOpenDialog(val.path)
+    }
+  },
   created() {
     this.catalogArray = CatalogArray
     this.catalogRoot = {
@@ -50,6 +53,7 @@ export default {
       level: 0,
       children: CatalogArray
     }
+    this.setOpenDialog(this.$route.path)
   },
   mounted() {},
   beforeUpdate() {},

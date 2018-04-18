@@ -95,6 +95,7 @@ export default {
   -moz-user-select: none;
   transition: all 0.3s;
   padding: 5px 0 5px 0;
+  white-space: nowrap;
 }
 
 .catalog-node-div:hover {
