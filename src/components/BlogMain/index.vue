@@ -1,7 +1,6 @@
 <template>
   <main class="blog-main">
     <div class="blog-div">
-      {{currentUrl}}
       <transition name="slide-fade">
         <router-view class="markdown-body no-border" ref="markdown"></router-view>
       </transition>
@@ -21,28 +20,27 @@ export default {
       // markdownElement.innerHTML = require('../../../blogs' +
       //   this.$store.state.currentUrl +
       //   '.md')
-      return this.$store.state.currentUrl
+      // return this.$store.state.currentUrl
+      return this.$route
+
     }
   },
   watch: {
     $route: function(val, oldVal) {
-      // console.log(val)
-      // let markdownElement = this.$refs.markdown.$el
-      // markdownElement.innerHTML = require('../../../blogs' + val.path + '.md')
+this.renderMarkdown()
     }
   },
-  mounted() {},
-  updated() {
-    // let markdownElement = this.$refs.markdown.$el
-    // markdownElement.innerHTML = require('../../../blogs/示例博客.md')
-    // markdownElement.innerHTML = markdownElement.innerText
-    //MarkdownToHtml(
-    //   markdownElement.firstElementChild.innerHTML
-    //     .replace(/&gt;/g, '>')
-    //     .replace(/&lt;/g, '<')
-    // )
+  created(){},
+  mounted() {
+    this.renderMarkdown()
   },
-  methods: {},
+  updated() {},
+  methods: {
+    renderMarkdown(){
+          let markdownElement = this.$refs.markdown.$el      
+    markdownElement.innerHTML = require('../../../blogs' + this.$route.path+ '.md')
+    }
+  },
   components: {
     TopScroll
   }
