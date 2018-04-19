@@ -91,17 +91,22 @@ code, pre {
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal;
   font-size: 12px;
   color: #222;
+  background-color: #f6f8fa;
 }
 
 code {    
   padding: 2px 8px;
   margin: 0 5px;
   font-size: 85%;
-  background-color: rgba(27,31,35,0.1);
   border-radius: 3px;
   // font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
   font-family: 'Roboto Mono', Monaco, courier, monospace;
-  // padding: 0 3px;
+  // color: cornsilk;
+}
+
+p code{
+  background-color: darkred;
+  color: aqua;
 }
 
 pre {
@@ -112,7 +117,7 @@ pre {
 pre code {
   padding: 0;
   margin: 0;
-  font-size: 100%;
+  font-size: 16px;
   word-break: normal;
   white-space: pre;
   background: transparent;
@@ -192,7 +197,7 @@ h1,h2,h3,h4,h5,h6{
 
 p {
   // margin-bottom: 20px;
-  font-weight: 300;
+  font-weight: 600;
 }
 
 a {color: #0366d6;
@@ -206,8 +211,7 @@ p a {
 blockquote {
   padding: 0 0 0 30px;
   margin-bottom: 20px;
-  // font-size: 1.6em;
-  border-left: 10px solid #e9e9e9;
+  border-left: 10px solid #aaa;
 }
 
 ul li {

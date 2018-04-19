@@ -96,11 +96,12 @@ export default {
   transition: all 0.3s;
   padding: 5px 0 5px 0;
   white-space: nowrap;
+  height: 18px;
 }
 
 .catalog-node-div:hover {
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: rgba(0, 0, 0, 1);
 }
 
 .right-chevron-i {
