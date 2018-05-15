@@ -22,7 +22,7 @@
           <a href="https://github.com/710241969/my-blog" class="contact-a" target="_blank">
             <i class="fa fa-github fa-2x fa-fw" style="    padding: 5px 0;"></i>
           </a>
-          <a class="contact-a" target="_blank">
+          <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=bllfXlxaX1dYVy4fH0ANAQM" class="contact-a" target="_blank">
             <i class="fa fa-envelope fa-2x fa-fw"></i>
           </a>
           <a class="contact-a" target="_blank">
