@@ -86,8 +86,8 @@ header h2 {
 }
 
 code, pre {
-  margin-top:5px; 
-  margin-bottom: 5px;
+  margin-top:-15px; 
+  margin-bottom: 15px;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal;
   font-size: 12px;
   color: #222;
@@ -126,7 +126,16 @@ pre code {
 }
 
 ul, ol, dl {
+  margin-top: -15px;
+  margin-left: 40px;
   margin-bottom: 20px;
+}
+
+li{
+  ul, ol, dl{
+    margin-top: 0px;
+    margin-left: 20px
+  }
 }
 
 
@@ -197,7 +206,8 @@ h1,h2,h3,h4,h5,h6{
 
 p {
   // margin-bottom: 20px;
-  font-weight: 600;
+  font-weight: 400;
+  line-height: 25px;
 }
 
 a {color: #0366d6;
@@ -212,6 +222,7 @@ blockquote {
   padding: 0 0 0 30px;
   margin-bottom: 20px;
   border-left: 10px solid #aaa;
+  background-color: rgba(255, 240, 240, 0.38);
 }
 
 ul li {
@@ -263,10 +274,11 @@ img{
 }
 
 strong {
-  font-weight: 600;
+  font-weight: 800;
 }
 
 em{
+  padding: 0 5px;
   font-style: italic;
 }
 
