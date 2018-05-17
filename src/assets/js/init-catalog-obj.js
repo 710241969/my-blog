@@ -1,5 +1,5 @@
 import { BlogRequireContextArray } from './blog-require-context'
-
+// console.log(BlogRequireContextArray)
 // const ROUTE_MATCH_REGEX = /^\.\/(.*).vue$/i
 
 const ROUTE_MATCH_REGEX = /^\.\/(.*).md$/i
