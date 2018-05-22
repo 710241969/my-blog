@@ -37,12 +37,12 @@ export default {
   },
   created() {},
   mounted() {
-    console.log("mounted");
-    console.log(this.$refs);
+    // console.log("mounted");
+    // console.log(this.$refs);
     this.renderMarkdown();
   },
   updated() {
-    console.log("update");
+    // console.log("update");
   },
   methods: {
     renderMarkdown() {
