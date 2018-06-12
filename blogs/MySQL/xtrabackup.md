@@ -41,7 +41,7 @@ xtrabackup version 2.4.11 based on MySQL server 5.7.19 Linux (x86_64) (revision 
 
 
 
-root@debian:~# innobackupex --defaults-file=/etc/mysql/my.cnf --socket=/var/run/mysqld/mysqld.sock --user=master --password=master  --parallel=4 --databases="sync_test_1 sync_test_2 sync_test_3" /tmp/mysqlbackup
+root@debian:~# innobackupex --defaults-file=/etc/mysql/my.cnf --socket=/var/run/mysqld/mysqld.sock --user=master --password=master --databases="sync_test_1 sync_test_2 sync_test_3" /tmp/mysqlbackup
 encryption: using gcrypt 1.7.6-beta
 180611 16:26:44 innobackupex: Starting the backup operation
 
@@ -325,3 +325,29 @@ drwxr-xr-x  3 root  root  4096 Jun  8 03:53 ucf
 drwxr-xr-x  2 root  root  4096 Jun  8 03:45 usbutils
 drwxr-xr-x  3 root  root  4096 Jun  8 03:44 vim
 drwxr-xr-x  2 root  root  4096 Jun  8 03:53 xml-core
+
+
+root@debian:/var/lib# innobackupex --defaults-file=/etc/mysql/my.cnf --socket=/var/run/mysqld/mysqld.sock --user=root --password=slave --copy-back --force-non-empty-directories /tmp/mysqlbackup/2018-06-12_00-00-16/            
+encryption: using gcrypt 1.7.6-beta
+180611 22:21:54 innobackupex: Starting the copy-back operation
+
+IMPORTANT: Please check that the copy-back run completes successfully.
+           At the end of a successful copy-back run innobackupex
+           prints "completed OK!".
+
+innobackupex version 2.4.11 based on MySQL server 5.7.19 Linux (x86_64) (revision id: b4e0db5)
+innobackupex: Can't create/write to file '/var/lib/mysql/ibdata1' (Errcode: 17 - File exists)
+[01] error: cannot open the destination stream for ibdata1
+[01] Error: copy_file() failed.
+root@debian:/var/lib# rm mysql/ib
+ibdata1      ib_logfile0  ib_logfile1  
+root@debian:/var/lib# rm mysql/ib*
+root@debian:/var/lib# innobackupex --defaults-file=/etc/mysql/my.cnf --socket=/var/run/mysqld/mysqld.sock --user=root --password=slave --copy-back --force-non-empty-directories /tmp/mysqlbackup/2018-06-12_00-00-16/
+
+CHANGE MASTER TO
+MASTER_HOST='192.168.6.3',
+MASTER_PORT=3306,
+MASTER_USER='master',
+MASTER_PASSWORD='master'
+MASTER_LOG_FILE='mysql-master-bin.000002',
+MASTER_LOG_POS=0;
