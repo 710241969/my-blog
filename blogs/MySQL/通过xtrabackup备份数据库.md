@@ -1,9 +1,13 @@
-https://www.percona.com/doc/percona-xtrabackup/LATEST/installation/apt_repo.html
+# 通过xtrabackup备份数据库
 
-Ready-to-use packages are available from the Percona XtraBackup software repositories and the download page.
+#介绍
 
-Supported Releases:
 
+## 安装
+### 通过APT安装
+> 安装的话其实只是将<a target="_blank" href="https://www.percona.com/doc/percona-xtrabackup/LATEST/installation/apt_repo.html">官网指导参考</a>整理了一下，我挺建议大家看看官网指导的
+
+支持下面这些系统：
 Debian:
 7.0 (wheezy)
 8.0 (jessie)
@@ -13,29 +17,33 @@ Ubuntu:
 16.04LTS (xenial)
 17.04 (zesty)
 17.10 (artful)
-Supported Platforms:
-
+支持这些平台:
 x86
 x86_64 (also known as amd64)
 
-Fetch the repository packages from Percona web:
+* 第一步
+首先获取仓库packages
+通过命令
+`wget https://repo.percona.com/apt/percona-release_0.1-4.$(lsb_release -sc)_all.deb`
 
-$ wget https://repo.percona.com/apt/percona-release_0.1-4.$(lsb_release -sc)_all.deb
-Install the downloaded package with dpkg. To do that, run the following commands as root or with sudo:
+* 第二步
+通过dpkg安装package
+`dpkg -i percona-release_0.1-4.$(lsb_release -sc)_all.deb`
+Percona仓库被加入后，你可以在`/etc/apt/sources.list.d/percona-release.list`文件中检查一下安装步骤
 
-$ sudo dpkg -i percona-release_0.1-4.$(lsb_release -sc)_all.deb
-Once you install this package the Percona repositories should be added. You can check the repository setup in the /etc/apt/sources.list.d/percona-release.list file.
+* 第三步
+更新一下apt
+`apt-get update`
 
-Remember to update the local cache:
+* 第四步
+终于可以安装了
+`apt-get install percona-xtrabackup-24`
 
-$ sudo apt-get update
-After that you can install the package:
-
-$ sudo apt-get install percona-xtrabackup-24
-
-root@debian:/usr/file# xtrabackup --version
+安装完成，查看一下版本，通过命令
+`xtrabackup --version`
+```
 xtrabackup version 2.4.11 based on MySQL server 5.7.19 Linux (x86_64) (revision id: b4e0db5)
-
+```
 
 
 
