@@ -19,7 +19,9 @@ module.exports = {
           loader: "markdown-loader",
           options: {
             renderer: new require("marked").Renderer(),
-            highlight: (code) => require("highlight.js").highlightAuto(code).value
+            highlight: (code, language) => {
+              return require("highlight.js").highlightAuto(code, language ? [language] : undefined).value
+            }
           }
         }
       ]
