@@ -67,3 +67,9 @@ vue-cli v3.0初始化
 
 # v0.16
 添加QQ邮件发送
+
+# v0.17
+修复代码高亮识别问题（highlight的方法加入language参数）；调整markdown代码样式
+
+# v0.17
+修复页面刷新博客组件不被加载问题（注册vue-router路由path中不该使用中文，应该使用encodeURI编码）

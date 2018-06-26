@@ -10,7 +10,7 @@ for (let i = 0, len = BlogRequireContextArray.length; i < len; i++) {
   let item = BlogRequireContextArray[i]
   let path = item.match(ROUTE_MATCH_REGEX)[1]
   vueRouter.push({
-    path: path,
+    path: encodeURI(path),
     name: path,
     component: Blog
     // resolve =>

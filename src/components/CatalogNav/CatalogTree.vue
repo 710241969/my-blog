@@ -65,7 +65,7 @@ export default {
       return this.catalogUrl + '/' + item.name
     },
     getBlog(item) {
-      this.$router.push({ path: this.getUrl(item) })
+      this.$router.push({ path: encodeURI(this.getUrl(item)) })
     },
     clickCatalog(item) {
       let oldOpen = item.open
