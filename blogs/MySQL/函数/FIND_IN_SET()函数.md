@@ -29,7 +29,6 @@ FIND_IN_SET(needle,haystack);
 但是实际应用还是不要用 `FIND_IN_SET(column, 'x,y,z')` 替代 `IN` ， `IN` 比 `FIND_IN_SET` 性能高。使用 `IN` 时会使用索引，只会查询表中部分数据。 `FIND_IN_SET` 则会查询表中全部数据
 
 ## 示例
-**简单示例**
 ```MYSQL
 mysql> SELECT FIND_IN_SET('1','2,1,3');
 +--------------------------+
