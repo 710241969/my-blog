@@ -2,7 +2,7 @@
 
 ## 简介
 ss(Socket Statistics)命令用来显示处于活动状态的套接字信息。ss命令可以用来获取socket统计信息，它可以显示和netstat类似的内容。但ss的优势在于它能够显示更多更详细的有关TCP和连接状态的信息，而且比netstat更快速更高效。
-ss命令是iproute工具集中一员并非所有系统都会默认包含ss命令，如果无法使用
+ss命令是iproute工具集中一员，并非所有系统都会默认包含ss命令，如果无法使用
 debian通过
 ```Shell
 apt-get install iproute
