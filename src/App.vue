@@ -25,14 +25,14 @@ export default {
       })
 
       let urlQueue = url.substring(1).split('/')
-      let catalogArrayItm = this.catalogArray
+      let catalogLoopArray = this.catalogArray
       while (urlQueue && urlQueue.length) {
         let urlItem = urlQueue.shift()
-        for (let i = 0, len = catalogArrayItm.length; i < len; i++) {
-          let catalogItem = catalogArrayItm[i]
-          if (catalogItem.name == urlItem && catalogItem.children) {
+        for (let i = 0, len = catalogLoopArray.length; i < len; i++) {
+          let catalogItem = catalogLoopArray[i]
+          if (encodeURI(catalogItem.name) == urlItem && catalogItem.children) {
             catalogItem.open = true
-            catalogArrayItm = catalogItem.children
+            catalogLoopArray = catalogItem.children
             break
           }
         }
