@@ -1,4 +1,6 @@
 # MySQL TIMESTAMPDIFF函数
+> TIPS: 在 MYSQL 里面，两个 datetime 类型相减是得不到想要的结果的
+
 MySQL 提供了 `IMESTAMPDIFF()` 函数来计算两个 `DATE` 或 `DATETIME` 值之间的差值。
 
 ## 语法
