@@ -25,7 +25,7 @@ DENIED Redis is running in protected mode because protected mode is enabled, no 
 这时可以发现，呀，果然不行，报错内容解释得很详细，我就不多说了。
 
 ## 进行配置
-redis有一份默认配置放在安装目录里面，注释比配置还多
+redis有一份默认配置放在解压的安装目录里面，注释比配置还多
 ```Bash
 root@debian:/usr/local/src/redis-4.0.11# ls -l
 total 372
@@ -47,12 +47,7 @@ drwxrwxr-x  3 root root   4096 Aug  7 17:03 src
 drwxrwxr-x 10 root root   4096 Aug  4 06:44 tests
 drwxrwxr-x  8 root root   4096 Aug  4 06:44 utils
 ```
-
-我建立一个 redis_6379.conf，代表我要使用这个配置运行一个监听6379端口的redis服务
-```Bash
-root@debian:/usr/local/src/redis-4.0.11# vi redis_6379.conf
-```
-然后就开始进行配置，使得其他机器（虚拟机）也能访问了，下面是一些常用的配置，字体**加粗**
+然后我们来对我们的redis进行配置，下面一些常用的配置，字体**加粗**
 * **端口**
   配置文件里，默认的端口号配置为 `port 6379`
   指定Redis服务监听端口，默认端口为6379，作者在自己的一篇博文中解释了为什么选用6379作为默认端口，因为6379在手机按键上MERZ对应的号码，而MERZ取自意大利歌女Alessia Merz的名字...
@@ -88,6 +83,11 @@ root@debian:/usr/local/src/redis-4.0.11# vi redis_6379.conf
   默认值 `logfile ""`
   Specify the log file name. Also the empty string can be used to force Redis to log on the standard output. Note that if you use standard output for logging but daemonize, logs will be sent to /dev/null
   日志记录方式，默认为标准输出，如果配置Redis为守护进程方式运行，而这里又配置为日志记录方式为标准输出，则日志将会发送给/dev/null
+
+* **数据库数量**
+  默认值 `databases 16`
+  Set the number of databases. The default database is DB 0, you can select a different one on a per-connection basis using `SELECT <dbid>` where dbid is a number between 0 and 'databases'-1
+  设置数据库的数量，默认16个，默认使用的数据库为0，可以使用SELECT <dbid>命令在连接上指定数据库id。注意下标是从0开始的
 
 * 日志级别
   默认值 `loglevel notice`
@@ -157,6 +157,10 @@ root@debian:/usr/local/src/redis-4.0.11# vi redis_6379.conf
    ```
 
 ## 启动Redis
+我建立一个 redis_6379.conf，代表我要使用这个配置运行一个监听6379端口的redis服务
+```Bash
+root@debian:/usr/local/src/redis-4.0.11# vi redis_6379.conf
+```
 现在可以根据我们需要的配置启动Redis了，很简单， `redis-server` 后面加上我们需要加载的配置文件即可
 ```Bash
 root@debian:/usr/local/src/redis-4.0.11/src# ./redis-server ../redis_6379.conf
