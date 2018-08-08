@@ -84,18 +84,10 @@ root@debian:/usr/local/src/redis-4.0.11# vi redis_6379.conf
   设置从数据库是否可以写，默认是只读，而且应该被设置为只读，因为写在从库的数据很容易被主库数据的同步而删除覆盖。从Redis 2.6开始，从库默认为只读。
   另外，从数据库不应该被不受信的网络访问得到
 
-* 日志输出
+* **日志输出**
   默认值 `logfile ""`
   Specify the log file name. Also the empty string can be used to force Redis to log on the standard output. Note that if you use standard output for logging but daemonize, logs will be sent to /dev/null
   日志记录方式，默认为标准输出，如果配置Redis为守护进程方式运行，而这里又配置为日志记录方式为标准输出，则日志将会发送给/dev/null
-
-* 数据目录
-  默认值 `dir ./`
-  The working directory.
-  The DB will be written inside this directory, with the filename specifiedabove using the 'dbfilename' configuration directive.
-  The Append Only File will also be created inside this directory.
-  Note that you must specify a directory here, not a file name.
-  指定本地数据库存放目录
 
 * 日志级别
   默认值 `loglevel notice`
@@ -106,6 +98,14 @@ root@debian:/usr/local/src/redis-4.0.11# vi redis_6379.conf
   notice (moderately verbose, what you want in production probably)
   warning (only very important / critical messages are logged)
   指定了服务端日志的级别。级别包括：debug（很多信息，方便开发、测试），verbose（许多有用的信息，但是没有debug级别信息多），notice（适当的日志级别，适合生产环境），warn（只有非常重要的信息）
+
+* 数据目录
+  默认值 `dir ./`
+  The working directory.
+  The DB will be written inside this directory, with the filename specifiedabove using the 'dbfilename' configuration directive.
+  The Append Only File will also be created inside this directory.
+  Note that you must specify a directory here, not a file name.
+  指定本地数据库存放目录
 
 * 断开连接
   默认值 `timeout 0`

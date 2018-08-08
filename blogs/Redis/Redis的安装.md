@@ -12,9 +12,12 @@ root@debian:/usr/local/src# cd redis-4.0.11
 root@debian:/usr/local/src/redis-4.0.11# make
 ...
 ```
-如果make出现 `bash: make: command not found` 的报错，要先安装编译工具包
-apt-get install build-essential libtool
-然后再执行make
+> **TIPS:** 如果make出现 `bash: make: command not found` 的报错，要先安装编译工具包
+> 
+> `apt-get install build-essential libtool`
+> 
+> 然后再执行make
+> 
 安装成功后，进入编译得到的src文件夹，启动redis服务
 ```Bash
 root@debian:/usr/local/src/redis-4.0.11# cd src/
