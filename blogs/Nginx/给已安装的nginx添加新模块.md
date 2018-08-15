@@ -111,8 +111,25 @@ nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful
 root@debian:/usr/local/nginx/sbin# ./nginx -c /usr/local/nginx/conf/nginx.conf
 ```
 
-
 直接访问代理服务ip，成功访问到业务页面，ok，no趴笨，收工
+
+## 坑点
+https://github.com/gnosek/nginx-upstream-fair/issues/25
+1.12.1以上nginx用不了fair
+```Bash
+/usr/local/src/nginx-upstream-fair-master/ngx_http_upstream_fair_module.c: In function ‘ngx_http_upstream_init_fair_rr’:
+/usr/local/src/nginx-upstream-fair-master/ngx_http_upstream_fair_module.c:543:28: error: ‘ngx_http_upstream_srv_conf_t {aka struct ngx_http_upstream_srv_conf_s}’ has no member named ‘default_port’
+     if (us->port == 0 && us->default_port == 0) {
+                            ^~
+/usr/local/src/nginx-upstream-fair-master/ngx_http_upstream_fair_module.c:553:51: error: ‘ngx_http_upstream_srv_conf_t {aka struct ngx_http_upstream_srv_conf_s}’ has no member named ‘default_port’
+     u.port = (in_port_t) (us->port ? us->port : us->default_port);
+                                                   ^~
+objs/Makefile:1224: recipe for target 'objs/addon/nginx-upstream-fair-master/ngx_http_upstream_fair_module.o' failed
+make[1]: *** [objs/addon/nginx-upstream-fair-master/ngx_http_upstream_fair_module.o] Error 1
+make[1]: Leaving directory '/usr/local/src/nginx-1.14.0'
+Makefile:8: recipe for target 'build' failed
+make: *** [build] Error 2
+```
 
 ## 参考
 https://github.com/gnosek/nginx-upstream-fair
