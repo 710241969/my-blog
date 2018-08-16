@@ -66,6 +66,18 @@ drwxrwxr-x  8 root root   4096 Aug  4 06:44 utils
 * **绑定地址**
   默认值 无 `#bind 127.0.0.1 192.168.1.1`
   和redis服务的 `bind` 配置的作用一样一样，但是默认没有设置。 
+  > **TIPS:**
+  > 如果有多个地址，要把对外的 192.168.1.1 写在前面，即 `bind 192.168.1.1 127.0.0.1` 否则会
+  > ```
+  17070:X 16 Aug 15:22:15.482 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+  17070:X 16 Aug 15:22:15.482 # Redis version=4.0.11, bits=64, commit=00000000, modified=0, pid=17070, just started
+  17070:X 16 Aug 15:22:15.482 # Configuration loaded
+  17071:X 16 Aug 15:22:15.484 * Running mode=sentinel, port=26379.
+  17071:X 16 Aug 15:22:15.488 # Sentinel ID is 2f6767c89ce38b8d0233e11628def4e089f28b5b
+  17071:X 16 Aug 15:22:15.488 # +monitor master mymaster 192.168.220.3 6379 quorum 2
+  17071:X 16 Aug 15:22:18.511 # +sdown master mymaster 192.168.220.3 6379
+  ```
+  >连接不上，不晓得为什么
 
 * **保护模式**
   默认值 无 `#protected-mode no`
@@ -90,7 +102,7 @@ drwxrwxr-x  8 root root   4096 Aug  4 06:44 utils
   Every long running process should have a well-defined working directory.For Redis Sentinel to chdir to /tmp at startup is the simplest thing for the process to don't interfere with administrative tasks such as unmounting filesystems.
   > **TIPS:**
   > 注意不要和redis-server使用相同的路径
-  
+
 * **监控的主节点**
   默认值 `sentinel monitor mymaster 127.0.0.1 6379 2`
   用法 `sentinel monitor <master-name> <ip> <redis-port> <quorum>`
