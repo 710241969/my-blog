@@ -316,5 +316,21 @@ repl_backlog_histlen:201148
 ```
 这时可以看到已经完美实现主从切换了
 
+sentinel支持的合法命令如下：
+
+PING sentinel回复PONG.
+
+SENTINEL masters 显示被监控的所有master以及它们的状态.   //用来查看监听的master name
+
+SENTINEL master <master name> 显示指定master的信息和状态；
+
+SENTINEL slaves <master name> 显示指定master的所有slave以及它们的状态；
+
+SENTINEL get-master-addr-by-name <master name> 返回指定master的ip和端口，如果正在进行failover或者failover已经完成，将会显示被提升为master的slave的ip和端口。
+
+SENTINEL reset <pattern> 重置名字匹配该正则表达式的所有的master的状态信息，清楚其之前的状态信息，以及slaves信息。
+
+SENTINEL failover <master name> 强制sentinel执行failover，并且不需要得到其他sentinel的同意。但是failover后会将最新的配置发送给其他sentinel。
+
 ## 参考
 https://raw.githubusercontent.com/antirez/redis/4.0/sentinel.conf
