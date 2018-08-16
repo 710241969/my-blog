@@ -88,7 +88,9 @@ drwxrwxr-x  8 root root   4096 Aug  4 06:44 utils
   默认值 `dir /tmp`
   用法 `dir <working-directory>`
   Every long running process should have a well-defined working directory.For Redis Sentinel to chdir to /tmp at startup is the simplest thing for the process to don't interfere with administrative tasks such as unmounting filesystems.
-
+  > **TIPS:**
+  > 注意不要和redis-server使用相同的路径
+  
 * **监控的主节点**
   默认值 `sentinel monitor mymaster 127.0.0.1 6379 2`
   用法 `sentinel monitor <master-name> <ip> <redis-port> <quorum>`
