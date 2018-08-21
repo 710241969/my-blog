@@ -19,7 +19,7 @@ time, mark, audio, video {
   vertical-align: baseline;
   border: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  line-height: 20px;
+  // line-height: 20px;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
@@ -166,15 +166,21 @@ form {
 /* GENERAL ELEMENT TYPE STYLES */
 
 h1 {
-  height: 40px;
+  // height: 40px;
   font-size: 46px;
       border-bottom: 1px solid #eaecef;
 }
 
 h2 {
-  margin-left: 10px;
-  margin-bottom: 8px;
+  padding-left: 10px;
+  // padding-top: 3px;
+  padding-bottom: 3px;
+  // margin-left: 10px;
+  // margin-bottom: 8px;
   font-size: 32px;
+  background-color: #a2251c;
+  // line-height: 40px;
+  color: white;
 }
 
 h3 {
@@ -197,9 +203,10 @@ h6 {  margin-left: 50px;  margin-bottom: 8px;
 }
 
 h1,h2,h3,h4,h5,h6{
-  margin-top: 24px;   font-weight: bold;
+  // margin-top: 24px;   
+  font-weight: bold;
   // color: #24292e;
-   color: #d5000d;
+  //  color: #d5000d;
   white-space: nowrap;
 }
 

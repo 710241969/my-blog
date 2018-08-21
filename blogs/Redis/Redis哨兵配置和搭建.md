@@ -2,30 +2,13 @@
 2018-08-08 11:22:23
 
 ## 前言
-1、Sentinel（哨兵）进程的作用：
+Redis 的 Sentinel 系统用于管理多个 Redis 服务器（instance）， 该系统执行以下三个任务：
+* 监控（Monitoring）： Sentinel 会不断地检查你的主服务器和从服务器是否运作正常。
+* 提醒（Notification）： 当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或者其他应用程序发送通知。
+* 自动故障迁移（Automatic failover）： 当一个主服务器不能正常工作时， Sentinel 会开始一次自动故障迁移操作， 它会将失效主服务器的其中一个从服务器升级为新的主服务器， 并让失效主服务器的其他从服务器改为复制新的主服务器； 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新主服务器的地址， 使得集群可以使用新主服务器代替失效服务器。
 
-              1】、监控(Monitoring): 哨兵(sentinel) 会不断地检查你的Master和Slave是否运作正常。
-
-              2】、提醒(Notification)：当被监控的某个Redis节点出现问题时, 哨兵(sentinel) 可以通过 API 向管理员或者其他应用程序发送通知。
-
-              3】、自动故障迁移(Automatic failover)：当一个Master不能正常工作时，哨兵(sentinel) 会开始一次自动故障迁移操作，它会将失效Master的其中一个Slave升级为新的Master, 并让失效Master的其他Slave改为复制新的Master；当客户端试图连接失效的Master时，集群也会向客户端返回新Master的地址，使得集群可以使用现在的Master替换失效Master。Master和Slave服务器切换后，Master的redis.conf、Slave的redis.conf和sentinel.conf的配置文件的内容都会发生相应的改变，即，Master主服务器的redis.conf配置文件中会多一行slaveof的配置，sentinel.conf的监控目标会随之调换。
-
-      
-       2、Sentinel（哨兵）进程的工作方式：
-
-             1】、每个Sentinel（哨兵）进程以每秒钟一次的频率向整个集群中的Master主服务器，Slave从服务器以及其他Sentinel（哨兵）进程发送一个 PING 命令。
-
-             2】、如果一个实例（instance）距离最后一次有效回复 PING 命令的时间超过 down-after-milliseconds 选项所指定的值， 则这个实例会被 Sentinel（哨兵）进程标记为主观下线（SDOWN）。
-
-             3】、如果一个Master主服务器被标记为主观下线（SDOWN），则正在监视这个Master主服务器的所有 Sentinel（哨兵）进程要以每秒一次的频率确认Master主服务器的确进入了主观下线状态。
-
-             4】、当有足够数量的 Sentinel（哨兵）进程（大于等于配置文件指定的值）在指定的时间范围内确认Master主服务器进入了主观下线状态（SDOWN）， 则Master主服务器会被标记为客观下线（ODOWN）。
-
-             5】、在一般情况下， 每个 Sentinel（哨兵）进程会以每 10 秒一次的频率向集群中的所有Master主服务器、Slave从服务器发送 INFO 命令。
-
-             6】、当Master主服务器被 Sentinel（哨兵）进程标记为客观下线（ODOWN）时，Sentinel（哨兵）进程向下线的 Master主服务器的所有 Slave从服务器发送 INFO 命令的频率会从 10 秒一次改为每秒一次。
-
-             7】、若没有足够数量的 Sentinel（哨兵）进程同意 Master主服务器下线， Master主服务器的客观下线状态就会被移除。若 Master主服务器重新向 Sentinel（哨兵）进程发送 PING 命令返回有效回复，Master主服务器的主观下线状态就会被移除。
+Redis Sentinel 是一个分布式系统， 你可以在一个架构中运行多个 Sentinel 进程（progress）， 这些进程使用流言协议（gossip protocols)来接收关于主服务器是否下线的信息， 并使用投票协议（agreement protocols）来决定是否执行自动故障迁移， 以及选择哪个从服务器作为新的主服务器。
+虽然 Redis Sentinel 释出为一个单独的可执行文件 redis-sentinel ， 但实际上它只是一个运行在特殊模式下的 Redis 服务器， 你可以在启动一个普通 Redis 服务器时通过给定 --sentinel 选项来启动 Redis Sentinel
 
 ## 哨兵配置
 类似redis服务的配置，redis有一份默认的哨兵配置放在解压的安装目录里面，注释比配置还多
@@ -76,8 +59,8 @@ drwxrwxr-x  8 root root   4096 Aug  4 06:44 utils
   17071:X 16 Aug 15:22:15.488 # Sentinel ID is 2f6767c89ce38b8d0233e11628def4e089f28b5b
   17071:X 16 Aug 15:22:15.488 # +monitor master mymaster 192.168.220.3 6379 quorum 2
   17071:X 16 Aug 15:22:18.511 # +sdown master mymaster 192.168.220.3 6379
-  ```
-  >连接不上，不晓得为什么
+  > ```
+  > 连接不上，不晓得为什么
 
 * **保护模式**
   默认值 无 `#protected-mode no`
@@ -106,11 +89,30 @@ drwxrwxr-x  8 root root   4096 Aug  4 06:44 utils
 * **监控的主节点**
   默认值 `sentinel monitor mymaster 127.0.0.1 6379 2`
   用法 `sentinel monitor <master-name> <ip> <redis-port> <quorum>`
-  Tells Sentinel to monitor this master, and to consider it in O_DOWN (Objectively Down) state only if at least <quorum> sentinels agree.
-  Note that whatever is the ODOWN quorum, a Sentinel will require to be elected by the majority of the known Sentinels in order to start a failover, so no failover can be performed in minority.
-  Slaves are auto-discovered, so you don't need to specify slaves in any way. Sentinel itself will rewrite this configuration file adding the slaves using additional configuration options. Also note that the configuration file is rewritten when a slave is promoted to master.
-  Note: master name should not include special characters or spaces.The valid charset is A-z 0-9 and the three characters ".-_".
-  设置监控的主节点的 名字、IP、端口 以及 有多少个哨兵认为主节点下线才真正认定主节点下线
+  >
+  > Tells Sentinel to monitor this master, and to consider it in O_DOWN
+  (Objectively Down) state only if at least <quorum> sentinels agree.
+  >
+  > Note that whatever is the ODOWN quorum, a Sentinel will require to
+  be elected by the majority of the known Sentinels in order to
+  start a failover, so no failover can be performed in minority.
+  >
+  > Slaves are auto-discovered, so you don't need to specify slaves in
+  any way. Sentinel itself will rewrite this configuration file adding
+  the slaves using additional configuration options.
+  Also note that the configuration file is rewritten when a
+  slave is promoted to master.
+  >
+  > Note: master name should not include special characters or spaces.
+  The valid charset is A-z 0-9 and the three characters ".-_".
+  >
+  设置监控的主节点的 名字、IP、端口 以及 有多少个哨兵认为主节点下线才真正认定主节点下线。
+  
+  指示 Sentinel 去监视一个名为 mymaster 的主服务器，这个主服务器的 IP 地址为 127.0.0.1 ，端口号为 6379，而将这个主服务器判断为失效至少需要 2 个 Sentinel 同意 （只要同意 Sentinel 的数量不达标，自动故障迁移就不会执行）
+
+  不过要注意， 无论你设置要多少个 Sentinel 同意才能判断一个服务器失效， **一个 Sentinel 都需要获得系统中多数（majority） Sentinel 的支持， 才能发起一次自动故障迁移，** 并预留一个给定的配置纪元 （configuration Epoch ，一个配置纪元就是一个新主服务器配置的版本号）。
+  
+  换句话说， **在只有少数（minority） Sentinel 进程正常运作的情况下， Sentinel 是不能执行自动故障迁移的。**
 
 * **连接密码**
   默认值 无 `#sentinel auth-pass mymaster MySUPER--secret-0123passw0rd`
@@ -137,15 +139,25 @@ drwxrwxr-x  8 root root   4096 Aug  4 06:44 utils
   用法 `sentinel down-after-milliseconds <master-name> <milliseconds>`
   Number of milliseconds the master (or any attached slave or sentinel) should be unreachable (as in, not acceptable reply to PING, continuously, for the specified period) in order to consider it in S_DOWN state (Subjectively Down).
   Default is 30 seconds.
-  设置当哨兵超过多长时间访问不到主库，就主观得认为主节点不可用。单位是毫秒，默认30秒
+  设置当哨兵超过多长时间访问不到主库，就主观得认为主节点不可用。单位是毫秒，默认30秒。
+  
+  如果服务器在给定的毫秒数之内， 没有返回 Sentinel 发送的 PING 命令的回复， 或者返回一个错误， 那么 Sentinel 将这个服务器标记为**主观下线**（subjectively down，简称 SDOWN ）。
 
-  sentinel parallel-syncs <master-name> <numslaves>
- 
+  不过只有一个 Sentinel 将服务器标记为主观下线并不一定会引起服务器的自动故障迁移： 只有在足够数量的 Sentinel 都将一个服务器标记为主观下线之后， 服务器才会被标记为客观下线（objectively down， 简称 ODOWN ）， 这时自动故障迁移才会执行。
+
+  将服务器标记为客观下线所需的 Sentinel 数量由对主服务器的配置决定。
+
+* **`sentinel parallel-syncs <master-name> <numslaves>`**
+  默认值 `sentinel parallel-syncs mymaster 1`
   How many slaves we can reconfigure to point to the new slave simultaneously
   during the failover. Use a low number if you use the slaves to serve query
   to avoid that all the slaves will be unreachable at about the same
   time while performing the synchronization with the master.
-sentinel parallel-syncs mymaster 1
+  指定了在执行故障转移时， 最多可以有多少个从服务器同时对新的主服务器进行同步， 这个数字越小， 完成故障转移所需的时间就越长。
+  
+  如果从服务器被设置为允许使用过期数据集（参见对 redis.conf 文件中对 slave-serve-stale-data 选项的说明）， 那么你可能不希望所有从服务器都在同一时间向新的主服务器发送同步请求， 因为尽管复制过程的绝大部分步骤都不会阻塞从服务器， 但从服务器在载入主服务器发来的 RDB 文件时， 仍然会造成从服务器在一段时间内不能处理命令请求： 如果全部从服务器一起对新的主服务器进行同步， 那么就可能会造成所有从服务器在短时间内全部不可用的情况出现。
+  
+  你可以通过将这个值设为 1 来保证每次只有一个从服务器处于不能处理命令请求的状态。
 
 * **主从切换超时时间**
   默认值 `sentinel failover-timeout mymaster 180000`
@@ -296,7 +308,7 @@ repl_backlog_histlen:19466
 127.0.0.1:6379> 
 ```
 已经成为从库了
-再看看 220.4 主库状态
+再看看 220.4 主库状态，多了220.3为从库
 ```Bash
 127.0.0.1:6379> info replication
 # Replication
@@ -316,21 +328,44 @@ repl_backlog_histlen:201148
 ```
 这时可以看到已经完美实现主从切换了
 
-sentinel支持的合法命令如下：
+日志信息可以对照下面的内容
+> +reset-master <instance details> ：主服务器已被重置。
++slave <instance details> ：一个新的从服务器已经被 Sentinel 识别并关联。
++failover-state-reconf-slaves <instance details> ：故障转移状态切换到了 reconf-slaves 状态。
++failover-detected <instance details> ：另一个 Sentinel 开始了一次故障转移操作，或者一个从服务器转换成了主服务器。
++slave-reconf-sent <instance details> ：领头（leader）的 Sentinel 向实例发送了 SLAVEOF 命令，为实例设置新的主服务器。
++slave-reconf-inprog <instance details> ：实例正在将自己设置为指定主服务器的从服务器，但相应的同步过程仍未完成。
++slave-reconf-done <instance details> ：从服务器已经成功完成对新主服务器的同步。
+-dup-sentinel <instance details> ：对给定主服务器进行监视的一个或多个 Sentinel 已经因为重复出现而被移除 —— 当 Sentinel 实例重启的时候，就会出现这种情况。
++sentinel <instance details> ：一个监视给定主服务器的新 Sentinel 已经被识别并添加。
++sdown <instance details> ：给定的实例现在处于主观下线状态。
+-sdown <instance details> ：给定的实例已经不再处于主观下线状态。
++odown <instance details> ：给定的实例现在处于客观下线状态。
+-odown <instance details> ：给定的实例已经不再处于客观下线状态。
++new-epoch <instance details> ：当前的纪元（epoch）已经被更新。
++try-failover <instance details> ：一个新的故障迁移操作正在执行中，等待被大多数 Sentinel 选中（waiting to be elected by the majority）。
++elected-leader <instance details> ：赢得指定纪元的选举，可以进行故障迁移操作了。
++failover-state-select-slave <instance details> ：故障转移操作现在处于 select-slave 状态 —— Sentinel 正在寻找可以升级为主服务器的从服务器。
+no-good-slave <instance details> ：Sentinel 操作未能找到适合进行升级的从服务器。Sentinel 会在一段时间之后再次尝试寻找合适的从服务器来进行升级，又或者直接放弃执行故障转移操作。
+selected-slave <instance details> ：Sentinel 顺利找到适合进行升级的从服务器。
+failover-state-send-slaveof-noone <instance details> ：Sentinel 正在将指定的从服务器升级为主服务器，等待升级功能完成。
+failover-end-for-timeout <instance details> ：故障转移因为超时而中止，不过最终所有从服务器都会开始复制新的主服务器（slaves will eventually be configured to replicate with the new master anyway）。
+failover-end <instance details> ：故障转移操作顺利完成。所有从服务器都开始复制新的主服务器了。
++switch-master <master name> <oldip> <oldport> <newip> <newport> ：配置变更，主服务器的 IP 和地址已经改变。 这是绝大多数外部用户都关心的信息。
++tilt ：进入 tilt 模式。
+-tilt ：退出 tilt 模式。
 
-PING sentinel回复PONG.
-
-SENTINEL masters 显示被监控的所有master以及它们的状态.   //用来查看监听的master name
-
-SENTINEL master <master name> 显示指定master的信息和状态；
-
-SENTINEL slaves <master name> 显示指定master的所有slave以及它们的状态；
-
-SENTINEL get-master-addr-by-name <master name> 返回指定master的ip和端口，如果正在进行failover或者failover已经完成，将会显示被提升为master的slave的ip和端口。
-
-SENTINEL reset <pattern> 重置名字匹配该正则表达式的所有的master的状态信息，清楚其之前的状态信息，以及slaves信息。
-
-SENTINEL failover <master name> 强制sentinel执行failover，并且不需要得到其他sentinel的同意。但是failover后会将最新的配置发送给其他sentinel。
+## Sentinel 命令
+以下列出的是 Sentinel 接受的命令：
+* **PING** ：返回 PONG 。
+* **SENTINEL masters** ：列出所有被监视的主服务器，以及这些主服务器的当前状态。
+* **SENTINEL master <master name>** 显示指定master的信息和状态；
+* **SENTINEL slaves <master name>** ：列出给定主服务器的所有从服务器，以及这些从服务器的当前状态。
+* **SENTINEL sentinels <master name>** Show a list of sentinel instances for this master, and their state.
+* **SENTINEL get-master-addr-by-name <master name>** ： 返回给定名字的主服务器的 IP 地址和端口号。 如果这个主服务器正在执行故障转移操作， 或者针对这个主服务器的故障转移操作已经完成， 那么这个命令返回新的主服务器的 IP 地址和端口号。
+* **SENTINEL reset <pattern>** ： 重置所有名字和给定模式 pattern 相匹配的主服务器。 pattern 参数是一个 Glob 风格的模式。 重置操作清楚主服务器目前的所有状态， 包括正在执行中的故障转移， 并移除目前已经发现和关联的， 主服务器的所有从服务器和 Sentinel 。
+* **SENTINEL failover <master name>** ： 当主服务器失效时， 在不询问其他 Sentinel 意见的情况下， 强制开始一次自动故障迁移 （不过发起故障转移的 Sentinel 会向其他 Sentinel 发送一个新的配置，其他 Sentinel 会根据这个配置进行相应的更新）。
 
 ## 参考
 https://raw.githubusercontent.com/antirez/redis/4.0/sentinel.conf
+http://doc.redisfans.com/topic/sentinel.html

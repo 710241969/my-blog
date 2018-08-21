@@ -2,7 +2,9 @@
 
 ## 介绍
 lsof - list open files
+
 在linux环境下，任何事物都以文件的形式存在，通过文件不仅仅可以访问常规数据，还可以访问网络连接和硬件。所以如传输控制协议 (TCP) 和用户数据报协议 (UDP) 套接字等，系统在后台都为该应用程序分配了一个文件描述符，无论这个文件的本质如何，该文件描述符为应用程序与基础操作系统之间的交互提供了通用接口。因为应用程序打开文件的描述符列表提供了大量关于这个应用程序本身的信息，因此通过lsof工具能够查看这个列表对系统监测以及排错将是很有帮助的。
+
 lsof命令用于查看你进程开打的文件，打开文件的进程，进程打开的端口(TCP、UDP)。找回/恢复删除的文件。是十分方便的系统监视工具，因为lsof命令需要访问核心内存和各种文件，所以需要root用户执行。
 
 
@@ -11,6 +13,44 @@ lsof命令用于查看你进程开打的文件，打开文件的进程，进程�
 lsof [参数][文件]
 
 ### 命令选项
+
+-i [46][protocol][@hostname|hostaddr][:service|port]
+选择出和指定的Internet地址信息匹配的文件列表。如果未指定地址信息，则列出所有Internet和x.25 (HP-UX)网络文件。
+选项：
+**46** 指定IP版本（只有当 UNIX 方言支持 IPv6 的时候，使用 `-i6` 才有效）。如果没有指定则输出全部ip版本
+**protocol** 指定网络协议。TCP 或 UDP `-iTCP`
+**hostname** 指定主机名。除非指定 IP 版本，否则列出全部IP版本的网络文件
+**hostaddr** 指定IP地址。IPv4地址使用点号的数字格式，如 127.0.0.1 ；IPv6地址则用冒号形式的数字地址，括在中括号中，如 [::1] （如果UNIX方言支持IPv6）。当选择IP版本时，只能指定其数字地址。
+**service** 指定 /etc/services 中服务的名字，可以多个，使用逗号隔开
+**port** 指定端口，可以多个，使用逗号隔开，或者数字的范围使用 - 指定范围 如 1-9999
+
+当指定了其中一个 IP 版本，则另外一个IP版本的文件信息将不会被列出。当打开的IPv4网络文件的地址映射到IPv6地址时，打开文件的类型将是IPv6，而不是IPv4，其显示将由“6”选择，而不是“4”。
+指定的命令之间可以不需要空格
+
+简单示例：
+-i6 - IPv6 only
+TCP:25 - TCP and port 25
+@1.2.3.4 - Internet IPv4 host address 1.2.3.4
+@[3ffe:1ebc::1]:1234 - Internet IPv6 host address
+      3ffe:1ebc::1, port 1234
+UDP:who - UDP who service port
+TCP@lsof.itap:513 - TCP, port 513 and host name lsof.itap
+tcp@foo:1-10,smtp,99 - TCP, ports 1 through 10,
+      service name smtp, port 99, host name foo
+tcp@bar:1-smtp - TCP, ports 1 through smtp, host bar
+:time - either TCP, UDP or UDPLITE time service port
+                     
+
+                IPv4 host names and addresses may not be specified if network file selection is limited to IPv6 with -i 6.  IPv6 host names and addresses may not be specified if network file selection is limited to IPv4 with -i4.  When an open IPv4 network file's address is mapped in an IPv6 address, the open file's type will be IPv6, not IPv4, and its display will be selected by '6', not '4'.
+
+                At  least one address component - 4, 6, protocol, hostname, hostaddr, or service - must be supplied.  The `@' character, leading the host specification, is always required; as is the `:', leading the port speci‐
+                fication.  Specify either hostname or hostaddr.  Specify either service name list or port number list.  If a service name list is specified, the protocol may also need to be specified if the TCP, UDP and UDPLITE
+                port numbers for the service name are different.  Use any case - lower or upper - for protocol.
+
+                Service  names  and  port  numbers  may be combined in a list whose entries are separated by commas and whose numeric range entries are separated by minus signs.  There may be no embedded spaces, and all service
+                names must belong to the specified protocol.  Since service names may contain embedded minus signs, the starting entry of a range can't be a service name; it can be a port number, however.
+
+
 -a：列出打开文件存在的进程；
 -c<进程名>：列出指定进程所打开的文件；
 -g：列出GID号进程详情；
