@@ -1,10 +1,11 @@
 <template>
-  <button v-show="buttonVisible" class="top-scroll-button" @click="toTop">
-    TOP
-  </button>
+  <button v-show="buttonVisible" class="top-scroll-button" @click="toTop">TOP</button>
 </template>
 
 <script>
+/**
+回到顶部按钮组件
+ */
 export default {
   data() {
     return {
@@ -12,48 +13,48 @@ export default {
       scrollInitSpeed: 5,
       scrollAddSpeed: 10,
       scrollTimeOut: 20
-    }
+    };
   },
   computed: {
     buttonVisible() {
-      return this.scrollTop > 200
+      return this.scrollTop > 200;
     }
   },
   mounted() {
-    window.addEventListener('scroll', this.handleScroll)
+    window.addEventListener("scroll", this.handleScroll);
   },
   destroyed() {
-    window.removeEventListener('scroll', this.handleScroll)
+    window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
     handleScroll() {
       this.scrollTop =
         window.pageYOffset ||
         document.documentElement.scrollTop ||
-        document.body.scrollTop
+        document.body.scrollTop;
     },
     toTop() {
-      let top = this.scrollTop
-      this.toTopTimeOut(top, this.scrollInitSpeed)
+      let top = this.scrollTop;
+      this.toTopTimeOut(top, this.scrollInitSpeed);
     },
     toTopTimeOut(top, speed) {
       setTimeout(() => {
         if (top - speed < 0) {
-          window.pageYOffset = 0
-          document.documentElement.scrollTop = 0
-          document.body.scrollTop = 0
-          return
+          window.pageYOffset = 0;
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          return;
         }
-        top = top - speed
-        window.pageYOffset = top
-        document.documentElement.scrollTop = top
-        document.body.scrollTop = top
-        speed += this.scrollAddSpeed
-        this.toTopTimeOut(top, speed)
-      }, this.scrollTimeOut)
+        top = top - speed;
+        window.pageYOffset = top;
+        document.documentElement.scrollTop = top;
+        document.body.scrollTop = top;
+        speed += this.scrollAddSpeed;
+        this.toTopTimeOut(top, speed);
+      }, this.scrollTimeOut);
     }
   }
-}
+};
 </script>
 
 
@@ -75,7 +76,7 @@ export default {
 }
 
 .top-scroll-button:before {
-  content: '';
+  content: "";
   height: 0px;
   width: 0px;
   position: absolute;
