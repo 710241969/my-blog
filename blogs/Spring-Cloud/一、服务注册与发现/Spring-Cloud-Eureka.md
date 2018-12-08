@@ -48,7 +48,7 @@ JAVA SDK 1.8.0_192
         </dependencies>
     </project>
    ```
-   > **TIPS:** 有点教程引入的 eureka 依赖是 `spring-cloud-starter-eureka-server` 这个是已经不推荐的，在 maven 仓库可以查到
+   > **TIPS:** 有的教程比较旧，引入的 eureka 依赖是 `spring-cloud-starter-eureka-server` 这个是已经不推荐的，在 maven 仓库可以查到
    > ![](../../img/20181129135903.jpg)
 3. 创建 main 入口
    要先在 main/java 下创建一个包！！！这个很重要，比如建个 example ，然后再加入一个类 EurekaServiceApplication
@@ -74,7 +74,8 @@ JAVA SDK 1.8.0_192
 
     #设置服务名称
     spring:
-      application.name: eureka-service
+	  application: 
+	  	name: eureka-service
 
     eureka:
       instance:
@@ -84,7 +85,7 @@ JAVA SDK 1.8.0_192
         register-with-eureka: false
         #注册中心不需要去发现服务
         fetch-registry: false
-        #设置服务注册中心的URL
+        #设置服务注册中心的 URL ，注意不能是 default-zone
         serviceUrl:
           defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
    ```
