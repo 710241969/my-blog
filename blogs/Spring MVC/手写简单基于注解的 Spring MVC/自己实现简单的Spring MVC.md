@@ -95,7 +95,7 @@ scanPackage=com.demo
 
 最核心最关键的路由请求分发器开始啦
 创建自己的 Dispathservlet ，继承自 HttpServlet
-在这里，只需要重写 `doGet` `doPost` `init` 三个方法就足够了
+在这里，只需要重写 `doGet` `doPost` `init` 三个方法就足够了，具体的都写到注释上了
 我们先看看成员变量，一共就这么些，具体每一个的作用后面详细说说
 ```JAVA
     private Properties contextConfig = new Properties(); // 读取的配置内容
@@ -157,7 +157,7 @@ scanPackage=com.demo
         }
     }
 ```
-扫描配置中指定的包
+doScan 扫描配置中指定的包，加入到 classNameList 中
 ```JAVA
     /**
      * 扫描指定包下的全部 class ,为 classNameList 加入数据
@@ -204,7 +204,7 @@ scanPackage=com.demo
         }
     }
 ```
-初始化 IOC 容器，将扫描到的需要实例化的类放入容器
+doInstance 遍历上一步得到的类列表，需要的类进行实例化，然后加入到 IOC 容器中
 ```JAVA
     /**
      * 实例化相关的类，并放入 IOC 容器中
@@ -249,9 +249,238 @@ scanPackage=com.demo
         }
     }
 ```
+doAutowired 进行依赖注入
+```JAVA
+    /**
+     * 遍历 IOC 容器中的对象，对加了 Autowired 注解的成员变量进行赋值
+     */
+    private void doAutowired() {
+        if (ioc.isEmpty()) {
+            return;
+        }
+        // 依赖注入，给 ioc 容器里加了 Autowired 注解的字段赋值
+        for (Map.Entry<String, Object> entry : ioc.entrySet()) {
+            // getDeclaredFields 方法获取类声明的所有变量，但不包括父类的变量
+            // 注意区分类似的 getFields 方法获取类的所有 public 变量，包括父类中的
+            Field[] fieldArray = entry.getValue().getClass().getDeclaredFields();
+            // 遍历每个字段，对加了 Autowired 注解的进行处理
+            for (Field field : fieldArray) {
+                if (!field.isAnnotationPresent(Autowired.class)) {
+                    continue;
+                }
+                Autowired autowired = field.getAnnotation(Autowired.class);
+                // 判断注解上是否使用了自定义的名字
+                String beanName = autowired.value().trim(); // 其实就是OC 容器的 key
+                if ("".equals(beanName)) {
+                    // 没有使用自定义名字，默认使用类名，首字母小写。
+                    beanName = StringUtil.lowerCaseFirst(field.getType().getSimpleName());
+                }
+                field.setAccessible(true); // 通过反射，获取私有属性访问权限，保证下面能够赋值
+                try {
+                    // 通过 set 给字段赋值。方法的第一个参数应传入需要修改这个字段的对象，第二个参数传入要赋予的值
+                    // 所以第一个参数是当前遍历到的这个对象，第二个参数是 IOC 容器中 key 为这个名字的实例
+                    field.set(entry.getValue(), ioc.get(beanName)); // 给注解了 Autowired 的类的字段，赋值为该字段类型的实例
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // 异常继续处理，事实上应该抛出
+                    continue;
+                }
+
+            }
+        }
+    }
+```
+handlerMapping 初始化路由和方法映射
+```JAVA
+    /**
+     * 初始化 handlerMapping
+     * 其实就是将 url 和处理整个 url 的方法映射起来
+     */
+    private void initHandlerMapping() {
+        if (ioc.isEmpty()) {
+            return;
+        }
+        // 遍历 IOC 容器
+        for (Map.Entry<String, Object> entry : ioc.entrySet()) {
+            // 只针对 Controller 进行处理，否则都略过
+            Class<?> clazz = entry.getValue().getClass();
+            if (!clazz.isAnnotationPresent(Controller.class)) {
+                continue;
+            }
+            String baseUrl = "";
+            if (clazz.isAnnotationPresent(RequestMapping.class)) {
+                // 首先如果类上使用了 RequestMapping 注解，那么 URL 从类上开始
+                RequestMapping requestMapping = clazz.getAnnotation(RequestMapping.class);
+                baseUrl = requestMapping.path();
+            }
+            // 通过 getMethods 方法获取该类的方法
+            Method[] methodArray = clazz.getMethods();
+            // 遍历方法，对加了 RequestMapping 的方法进行处理
+            for (Method method : methodArray) {
+                if (!method.isAnnotationPresent(RequestMapping.class)) {
+                    continue;
+                }
+                // 获取这个方法的 RequestMapping 注解，拿到注解的属性值
+                RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
+                String regex = (baseUrl + requestMapping.path()).replaceAll("/+", "/");
+                Pattern pattern = Pattern.compile(regex);
+                // Handler 是自定义的内嵌类，带有 URL 地址、类名和对应的 Controller 方法等等。
+                // handlerList 加入这个方法对应的 Handler
+                handlerList.add(new Handler(pattern, entry.getValue(), method));
+            }
+        }
+    }
+```
+这是自己定义的那个内嵌类 Handler
+```JAVA
+    private class Handler {
+        private Pattern pattern; // url 正则匹配规则。
+        private Object controller; // 方法对应的实例
+        private Method method; // 方法
+        private Map<String, Integer> paramIndexMap; // 参数对应的顺序映射 paramIndexMap<变量名，变量在所属方法中变量列表的下标>
+
+        private Handler(Pattern pattern, Object controller, Method method) {
+            this.pattern = pattern;
+            this.controller = controller;
+            this.method = method;
+            paramIndexMap = new HashMap<>();
+            putParamIndexMapping(method);
+        }
+
+        /**
+         * 处理加了 RequestParam 注解的参数
+         *
+         * @param method
+         */
+        private void putParamIndexMapping(Method method) {
+            // 获取加了 annotation 注解的参数
+            Annotation[][] parameterAnnotationArray = method.getParameterAnnotations(); // 结果是一个二维数组，因为参数前可以添加多个注解
+            // 遍历每个参数
+            for (int i = 0, len = parameterAnnotationArray.length; i < len; i++) {
+                // 遍历参数的每个注解
+                for (Annotation annotation : parameterAnnotationArray[i]) {
+                    // 找出注解了 RequestParam 的参数
+                    if (annotation instanceof RequestParam) {
+                        String paramName = ((RequestParam) annotation).value();
+                        if (!"".equals(paramName)) {
+                            paramIndexMap.put(paramName, i);
+                        }
+                    }
+                }
+            }
+            // 特殊处理 HttpServletRequest 和 HttpServletResponse 两个变量
+            // getParameterTypes 方法获取这个方法传入的参数类型列表
+            Class<?>[] paramTypeArray = method.getParameterTypes();
+            for (int i = 0, len = paramTypeArray.length; i < len; i++) {
+                Class<?> type = paramTypeArray[i];
+                if (type == HttpServletRequest.class || type == HttpServletResponse.class) {
+                    paramIndexMap.put(type.getName(), i);
+                }
+            }
+        }
+    }
+```
+最后，开始响应请求啦
+重写 doGet
+```JAVA
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //偷个懒
+        this.doPost(req, resp);
+    }
+```
+所以把重点都放到 doPost上
+```JAVA
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            if (handlerList.isEmpty()) {
+                // 没有任何处理，则返回 404
+                resp.getWriter().write("404 Not Found");
+                return;
+            }
+
+            // handlerList 中找到相应的 handler
+            String url = req.getRequestURI();
+            String contextPath = req.getContextPath();
+            url = url.replace(contextPath, "").replaceAll("/+", "/");
+            Handler handler = null;
+            // 遍历 handlerList 找出对应该请求 uri 的 hadler
+            for (Handler handlerItem : handlerList) {
+                Matcher matcher = handlerItem.pattern.matcher(url);
+                if (!matcher.matches()) {
+                    continue;
+                }
+                handler = handlerItem;
+            }
+            if (null == handler) {
+                resp.getWriter().write("404 Not Found");
+                return;
+            }
+
+            Class<?>[] paramTypeArray = handler.method.getParameterTypes();
+            Object[] paramValueArray = new Object[paramTypeArray.length];
+            Map<String, String[]> paramMap = req.getParameterMap(); // 请求携带的参数，key 是参数名，value 是参数的值字符串数组
+            // 遍历请求中携带的参数
+            for (Map.Entry<String, String[]> param : paramMap.entrySet()) {
+                String value = Arrays.toString(param.getValue()).replaceAll("\\[|\\]", ""); // 将 value 的字符串中的两个中括号去掉 [] ，正则中使用 | 替换多个字符
+                if (!handler.paramIndexMap.containsKey(param.getKey())) {
+                    continue;
+                }
+                int index = handler.paramIndexMap.get(param.getKey());
+                paramValueArray[index] = value;
+            }
+            // 请求中传入的参数是没有 HttpServletRequest 和 HttpServletResponse 的，我们必须对这两个进行处理
+            int reqIndex = handler.paramIndexMap.get(HttpServletRequest.class.getName());
+            paramValueArray[reqIndex] = req;
+            int resIndex = handler.paramIndexMap.get(HttpServletResponse.class.getName());
+            paramValueArray[resIndex] = resp;
+            
+            handler.method.invoke(handler.controller, paramValueArray); // 最后通过反射调用方法
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.getWriter().write("500 Server Internal Error");
+            return;
+        }
+    }
+```
+
+搞定，最后加入一个简单的 controller 来测试测试相应功能
+```JAVA
+@Controller
+@RequestMapping(path = "/hello")
+public class HelloController {
+    @Autowired
+    private HelloService helloService;
+
+    @RequestMapping(path = "/world")
+    public void helloWorld(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "name") String name) {
+        try {
+            response.getWriter().write("Hello," + name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping(path = "/age")
+    public void getAge(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            response.getWriter().write("Age is " + helloService.getAge());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+部署好 tomcat 等容器之后之后，跑一下
+经过一系列 DEBUG 之后，终于成功了。。
+![](../../img/20181215213849.png)
+
+
+当然，上面这些其实都是简单核心思想的示例，真实的 spring mvc 可比这个复杂得多了
 
 ## 代码地址
-代码已经放到 github 上
+完整项目代码已经放到 github 上
 https://github.com/710241969/my-spring
 
 ## 参考
