@@ -32,10 +32,10 @@ gmt_create,gmt_modified 的类型均为`DATETIME`类型，前者现在时表示�
 > “NULL columns require additional space in the row to record whether their values are NULL. 
 For MyISAM tables, each NULL column takes one bit extra, rounded up to the nearest byte.”
 >
-(1) NULL需要占用空间，而空值不占用
-(2) NULL只能采用 `IS NULL`、`IS NOT NULL` 判断，并且在使用 `=`、`!=`、`IN`、`NOT IN` 时会有坑哦
-(3) MySQL难以优化引用可空列查询，它会使索引、索引统计和值更加复杂。B树索引时不会存储NULL值的，所以如果索引的字段可以为NULL，索引的效率会下降很多
-**注意：**在进行count()统计某列的记录数的时候，如果采用的NULL值，系统会自动忽略掉，但是空值是会进行统计到其中的
+(1) NULL 需要占用空间，而空值不占用
+(2) NULL 只能采用 `IS NULL`、`IS NOT NULL` 判断，并且在使用 `=`、`!=`、`IN`、`NOT IN` 时会有坑哦
+(3) MySQL 难以优化引用可空列查询，它会使索引、索引统计和值更加复杂。B树索引时不会存储NULL值的，所以如果索引的字段可以为NULL，索引的效率会下降很多
+**注意：**在进行 count() 统计某列的记录数的时候，如果采用的 NULL 值，系统会自动忽略掉，但是空值是会进行统计到其中的
 
 * **小数的数据类型设置为 `DECIMAL` **
 说明：禁止使用 `FLOAT` 和 `DOUBLE`。
