@@ -239,6 +239,13 @@ public static void wrongReleaseLock2(Jedis jedis, String lockKey, String request
 
 如果你的项目中Redis是多机部署的，那么可以尝试使用Redisson实现分布式锁，这是Redis官方提供的Java组件（等我用一下再说）
 
+## redis 分布式锁和 zk 分布式锁的对比
+redis 分布式锁，其实需要自己不断去尝试获取锁，比较消耗性能。
+zk 分布式锁，获取不到锁，注册个监听器即可，不需要不断主动尝试获取锁，性能开销较小。
+另外一点就是，如果是 redis 获取锁的那个客户端 出现 bug 挂了，那么只能等待超时时间之后才能释放锁；而 zk 的话，因为创建的是临时 znode，只要客户端挂了，znode 就没了，此时就自动释放锁。
+
+
+
 ## 参考
 <a target="_blank" href="https://www.javadoc.io/doc/redis.clients/jedis/2.9.0">Jedis官方文档</a>
 <a target="_blank" href="https://redis.io/commands/set">Redis官方文档</a>

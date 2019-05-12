@@ -1,6 +1,6 @@
 Semaphore
 信号量
-用于控制一组资源的访问权限
+用于控制一组资源的访问权限，是一个计数信号量，它的本质是一个"共享锁"。
 比如有 5 台电脑，但是有 10 个人，但是每台电脑只能有 1 个人使用，那么剩下的人只能等待其他人使用完
 
 提供了两个构造器
@@ -35,9 +35,15 @@ Semaphore
     }
 ```
 
+```Java
+    /** All mechanics via AbstractQueuedSynchronizer subclass */
+    private final Sync sync;
+```
+
 通过 acquire() 方法去获取资源
 通过 release() 方法去释放资源
 
 
 原理
+和 ReentrantLock 一样，其中一个成员变量 `private final Sync sync;` 分别有两个实现类（公平和非公平）；也是两个构造函数，默认是非公平锁
 Semaphore内部主要通过AQS（AbstractQueuedSynchronizer）实现线程的管理

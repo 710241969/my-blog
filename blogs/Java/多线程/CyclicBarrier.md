@@ -3,7 +3,7 @@ CyclicBarrier
 可重用是指，当 parties 个线程完成后，如果后面又有 parties 个线程去执行相同逻辑，结果是一样的。比如说每5个1循环，每 5 个 1 循环，而 CountDownLatch 是只能用一次，计数器到0了就用完了
 
 实现原理
-CyclicBarrier 主要是由 ReentrantLock 可重入锁和 Condition 共同实现的
+CyclicBarrier 主要是由 ReentrantLock 和 Condition 共同实现的
 ```JAVA
     /** The lock for guarding barrier entry */
     private final ReentrantLock lock = new ReentrantLock();

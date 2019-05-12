@@ -10,6 +10,7 @@
 * **使用 `utf8mb4` 作为字符编码**
 说明：MySQL的utf8只支持每个字符3个字节，并不是真正的UTF-8。
 当出现类似emoji表情的字符，MySQL的utf8是存不了的。应当使用`utf8mb4`
+> 从 MySQL 8 开始，使用 utf8mb4 作为 MySQL 的默认字符集从 MySQL 8 开始，使用 utf8mb4 作为 MySQL 的默认字符集
 
 * **表必备三字段：`id`, `gmt_create`, `gmt_modified`**
 说明：id 必为主键，类型为`UNSIGNED BIGINT`、单表时自增、步长为 1
